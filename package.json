@@ -24,7 +24,7 @@
     "ejs": "^3.0.1",
     "jszip": "^3.2.2",
     "prismjs": "^1.17.1",
-    "quicktype-core": "^6.0.46",
+    "quicktype-core": "6.0.46",
     "raw-loader": "^3.1.0",
     "uuid": "^3.3.2",
     "vue": "^2.6.10",
