@@ -1,0 +1,22 @@
+{
+        "editor.rulers": [
+            80,
+            120
+        ],
+        "highlight.regexes": {
+            "(\\<\\%.)(.*)(.\\%\\>)": [ // A regex will be created from this string, don't forget to double escape it
+                { 
+                    "color": "#a91e50",
+                    "backgroundColor": "#b4ca65"
+                }, // Decoration options to apply to the first capturing group, in this case "//TODO"
+                { 
+                    //"color": "#a91e50",
+                    "backgroundColor": "#3b3622"
+                }, // Decoration options to apply to the second capturing group, in this case ":"
+                { 
+                    "color": "#a91e50",
+                    "backgroundColor": "#b4ca65"
+                }
+            ]
+        }
+}

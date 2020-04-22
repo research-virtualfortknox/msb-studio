@@ -1,0 +1,236 @@
+{
+    "$id": "https://example.com/selfdescription-schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "SelfDescription",
+    "type": "object",
+    "properties": {
+      "@class": {
+        "type": "string",
+        "description": "The uuid of the service.",
+        "enum": [
+          "Application",
+          "SmartObject"
+        ]
+      },
+      "uuid": {
+        "type": "string",
+        "description": "The uuid of the service."
+      },
+      "name": {
+        "type": "string",
+        "description": "The name of the service."
+      },
+      "description": {
+        "type": "string",
+        "description": "The description of the service."
+      },
+      "token": {
+        "type": "string",
+        "description": "The token of the service."
+      },
+      "events": {
+        "type": "array",
+        "description": "This is a simple array of events",
+        "items": {
+          "$ref": "#/definitions/event"
+        }
+      },
+      "functions": {
+        "type": "array",
+        "description": "This is a simple array of functions",
+        "items": {
+          "$ref": "#/definitions/function"
+        }
+      }
+    },
+    "definitions": {
+      "event": {
+        "type": "object",
+        "required": [
+          "eventId",
+          "name",
+          "dataFormat"
+        ],
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "description": "The id of the event."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the event."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the event."
+          },
+          "dataFormat": {
+            "type": "object",
+            "oneOf": [
+              {
+                "$ref": "#/definitions/dataObjectSimpleString"
+              },
+              {
+                "$ref": "#/definitions/dataObjectSimpleInteger"
+              },
+              {
+                "$ref": "#/definitions/dataObjectSimpleStringArray"
+              },
+              {
+                "$ref": "#/definitions/dataObjectSimpleIntegerArray"
+              },
+              {
+                "$ref": "#/definitions/dataObjectObjectPlaceholder"
+              }
+            ]
+          }
+        }
+      },
+      "function": {
+        "type": "object",
+        "required": [
+          "functionId",
+          "name",
+          "dataFormat"
+        ],
+        "properties": {
+          "functionId": {
+            "type": "string",
+            "description": "The id of the function."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the function."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the function."
+          },
+          "dataFormat": {
+            "type": "object",
+            "oneOf": [
+              {
+                "$ref": "#/definitions/dataObjectSimpleString"
+              },
+              {
+                "$ref": "#/definitions/dataObjectSimpleInteger"
+              },
+              {
+                "$ref": "#/definitions/dataObjectSimpleStringArray"
+              },
+              {
+                "$ref": "#/definitions/dataObjectSimpleIntegerArray"
+              },
+              {
+                "$ref": "#/definitions/dataObjectObjectPlaceholder"
+              }
+            ]
+          }
+        }
+      },
+      "dataObjectObjectPlaceholder": {
+        "title": "Simple Object (placeholder)",
+        "type": "object",
+        "properties": {
+          "dataObject": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const" : "object"
+              }
+            }
+          }
+        }
+      },
+      "dataObjectSimpleString": {
+        "title": "Simple String",
+        "type": "object",
+        "properties": {
+          "dataObject": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const" : "string"
+              }
+            }
+          }
+        }
+      },
+      "dataObjectSimpleInteger": {
+        "title": "Simple Integer",
+        "type": "object",
+        "properties": {
+          "dataObject": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const" : "integer"
+              },
+              "format": {
+                "type": "string",
+                "const" : "int32"
+              }
+            }
+          }
+        }
+      },
+      "dataObjectSimpleStringArray": {
+        "title": "Simple String Array",
+        "type": "object",
+        "properties": {
+          "dataObject": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const" : "array"
+              },
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const" : "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "dataObjectSimpleIntegerArray": {
+        "title": "Simple Integer Array",
+        "type": "object",
+        "properties": {
+          "dataObject": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const" : "array"
+              },
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "const" : "integer"
+                  },
+                  "format": {
+                    "type": "string",
+                    "const" : "int32"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "simpleTypes": {
+        "enum": [ "array", "boolean", "integer", "number", "object", "string" ]
+      }
+    }
+}

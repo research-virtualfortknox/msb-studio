@@ -1,0 +1,340 @@
+{
+    "$id": "https://research.virtualfortknox.de/de/selfdescription-schema.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "MSB Self-Description",
+    "type": "object",
+    "description": "A selfdescription of a service describes its identification data and its communication capabilities. It is used for registration at the MSB.",
+    "required": [
+      "@class",
+      "uuid",
+      "name",
+      "description"
+    ],
+    "properties": {
+      "@class": {
+        "type": "string",
+        "enum": [
+          "Application",
+          "SmartObject"
+        ]
+      },
+      "uuid": {
+        "type": "string",
+        "description": "The uuid (uuidv4) of the service."
+      },
+      "name": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "token": {
+        "type": "string"
+      },
+      "configuration": {
+        "type": "object",
+        "properties": {
+          "parameters": {
+            "type": "object",
+            "$ref": "#/definitions/configurationParams"
+          }
+        }
+      },
+      "events": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/event"
+        }
+      },
+      "functions": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/function"
+        }
+      }
+    },
+    "definitions": {
+      "configurationParams": {
+        "type": "object",
+        "additionalProperties":{
+          "$ref":"#/definitions/configurationParamsObject"
+        }
+      },
+      "configurationParamsObject": {
+        "type": "object",
+        "required": [
+          "value",
+          "type"
+        ],
+        "properties": {
+          "value": {
+            "type": [ "string", "boolean", "integer", "number" ]
+          },
+          "type": {
+            "enum": [ "string", "boolean", "integer", "number" ]
+          },
+          "format": {
+            "enum": [ "int32", "int64", "float", "double", "date-time" , null]
+          }
+        },
+        "if": {
+          "properties": {
+            "type": {
+              "enum": [ "integer", "number" ]
+            }
+          }
+        },
+        "then": {
+          "required": [
+            "format"
+          ]
+        }
+      },
+      "event": {
+        "type": "object",
+        "required": [
+          "@id",
+          "eventId",
+          "name",
+          "dataFormat"
+        ],
+        "properties": {
+          "@id": {
+            "type": "integer"
+          },
+          "eventId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "dataFormat": {
+            "$ref":"#/definitions/dataFormat"
+          }
+        }
+      },
+      "function": {
+        "type": "object",
+        "required": [
+          "functionId",
+          "name",
+          "dataFormat"
+        ],
+        "properties": {
+          "functionId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "dataFormat": {
+            "$ref":"#/definitions/dataFormat"
+          }
+        }
+      },
+      "dataFormat":{
+        "type":"object",
+        "properties":{
+           "dataObject":{
+              "$ref":"#/definitions/dataObject"
+           }
+        },
+        "additionalProperties":{
+           "$ref":"#/definitions/schema"
+        },
+        "description":"One or more JSON objects describing the schemas being consumed and produced by the API."
+     },
+      "dataObject":{
+        "$ref":"#/definitions/schema"
+      },
+      "schema":{
+          "type":"object",
+          "description":"A deterministic version of a JSON Schema object.",
+          "properties":{
+            "$ref":{
+                "type":"string"
+            },
+            "format":{
+                "type":"string"
+            },
+            "title":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/title"
+            },
+            "description":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/description"
+            },
+            "default":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/default"
+            },
+            "multipleOf":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/multipleOf"
+            },
+            "maximum":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/maximum"
+            },
+            "exclusiveMaximum":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/exclusiveMaximum"
+            },
+            "minimum":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/minimum"
+            },
+            "exclusiveMinimum":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/exclusiveMinimum"
+            },
+            "maxLength":{
+                "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveInteger"
+            },
+            "minLength":{
+                "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0"
+            },
+            "pattern":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/pattern"
+            },
+            "maxItems":{
+                "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveInteger"
+            },
+            "minItems":{
+                "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0"
+            },
+            "uniqueItems":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/uniqueItems"
+            },
+            "maxProperties":{
+                "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveInteger"
+            },
+            "minProperties":{
+                "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0"
+            },
+            "required":{
+                "$ref":"http://json-schema.org/draft-04/schema#/definitions/stringArray"
+            },
+            "enum":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/enum"
+            },
+            "additionalProperties":{
+                "anyOf":[
+                  {
+                      "$ref":"#/definitions/schema"
+                  },
+                  {
+                      "type":"boolean"
+                  }
+                ],
+                "default":{
+
+                }
+            },
+            "type":{
+                "$ref":"http://json-schema.org/draft-04/schema#/properties/type"
+            },
+            "items":{
+                "anyOf":[
+                  {
+                      "$ref":"#/definitions/schema"
+                  },
+                  {
+                      "type":"array",
+                      "minItems":1,
+                      "items":{
+                        "$ref":"#/definitions/schema"
+                      }
+                  }
+                ],
+                "default":{
+
+                }
+            },
+            "allOf":{
+                "type":"array",
+                "minItems":1,
+                "items":{
+                  "$ref":"#/definitions/schema"
+                }
+            },
+            "properties":{
+                "type":"object",
+                "additionalProperties":{
+                  "$ref":"#/definitions/schema"
+                },
+                "default":{
+
+                }
+            },
+            "discriminator":{
+                "type":"string"
+            },
+            "readOnly":{
+                "type":"boolean",
+                "default":false
+            },
+            "example":{
+
+            }
+          },
+          "additionalProperties":false
+      },
+      "title":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/title"
+      },
+      "description":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/description"
+      },
+      "default":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/default"
+      },
+      "multipleOf":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/multipleOf"
+      },
+      "maximum":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/maximum"
+      },
+      "exclusiveMaximum":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/exclusiveMaximum"
+      },
+      "minimum":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/minimum"
+      },
+      "exclusiveMinimum":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/exclusiveMinimum"
+      },
+      "maxLength":{
+          "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveInteger"
+      },
+      "minLength":{
+          "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0"
+      },
+      "pattern":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/pattern"
+      },
+      "maxItems":{
+          "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveInteger"
+      },
+      "minItems":{
+          "$ref":"http://json-schema.org/draft-04/schema#/definitions/positiveIntegerDefault0"
+      },
+      "uniqueItems":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/uniqueItems"
+      },
+      "enum":{
+          "$ref":"http://json-schema.org/draft-04/schema#/properties/enum"
+      },
+      "jsonReference":{
+          "type":"object",
+          "required":[
+            "$ref"
+          ],
+          "additionalProperties":false,
+          "properties":{
+            "$ref":{
+                "type":"string"
+            }
+          }
+      }
+    }
+}
