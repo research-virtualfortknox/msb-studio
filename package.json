@@ -1,6 +1,6 @@
 {
   "name": "msb-studio",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "description": "MSB Studio is a simple code-generation tool to the development of new MSB client projects easier.",
   "author": "Matthias Stoehr",
