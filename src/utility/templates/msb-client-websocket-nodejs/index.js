@@ -26,48 +26,42 @@ myMsbClient.enableDataFormatValidation(true)
 // add events
 <% if (events) { -%>
 <%   events.forEach(function(event){ -%>
-<%     if (event.eventId !== 'CONNECTED' && event.eventId !== 'UNCONNECTED'){  -%>
 <%-      "myMsbClient.addEvent({" %>
-<%-        "  eventId: '" + (event.eventId ? event.eventId : event.functionId + '_EVENT') + "'," %>
+<%-        "  eventId: '" + event.eventId + "'," %>
 <%-        "  name: '" + event.name + "'," %>
 <%-        "  description: '" + event.description + "'," %>
 <%-        "  dataFormat:" + '\n' + JSON.stringify(event.dataFormat, null, 2).replace(/^(?=.)/gm, ' '.repeat(2)) + "," %>
 <%-        "  implementation: {\n    priority: 0, //// 0 (LOW), 1 (MEDIUM), 2 (HIGH)\n  }," %>
 <%-      "})" -%>
 <%-  %>
-<%     } -%>
 <%   }) -%>
 <% } -%>
 
 // add functions
 <% if (functions) { -%>
 <%   functions.forEach(function(func){ -%>
-<%     if ((func.functionId ? func.functionId : func.eventId) !== 'CONNECTED' && (func.functionId ? func.functionId : func.eventId) !== 'UNCONNECTED'){  -%>
 <%-      "myMsbClient.addFunction({" %>
-<%-        "  functionId: '" + (func.functionId ? func.functionId : func.eventId + '_FUNCTION') + "'," %>
+<%-        "  functionId: '" + func.functionId + "'," %>
 <%-        "  name: '" + func.name + "'," %>
 <%-        "  description: '" + func.description + "'," %>
 <%-        "  dataFormat:" + '\n' + JSON.stringify(func.dataFormat, null, 2).replace(/^(?=.)/gm, ' '.repeat(2)) + "," %>
-<%-        "  implementation: " + 'handle_' + (func.functionId ? func.functionId : func.eventId + '_FUNCTION') + "," %>
+<%-        "  implementation: " + 'handle_' + func.functionId + "," %>
 <%-        "  responseEvents: [" + (func.responseEventsString ? func.responseEventsString : "") + "]" %>
 <%-      "})" -%>
 <%-  %>
-<%     } -%>
 <%   }) -%>
 <% } -%>
 
 // function implementations
 <% if (functions) { -%>
 <%   functions.forEach(function(func){ -%>
-<%     if ((func.functionId ? func.functionId : func.eventId) !== 'CONNECTED' && (func.functionId ? func.functionId : func.eventId) !== 'UNCONNECTED'){  -%>
-<%-      "function handle_" + (func.functionId ? func.functionId : func.eventId + '_FUNCTION') + "(msg) {" %>
-<%-        "  console.info('handle_" + (func.functionId ? func.functionId : func.eventId + '_FUNCTION') + ": ' + JSON.stringify(msg));" %>
+<%-      "function handle_" + func.functionId + "(msg) {" %>
+<%-        "  console.info('handle_" + func.functionId + ": ' + JSON.stringify(msg));" %>
 <%         if (func.responseEventsString) { -%>
 <%-          "  // TODO: Send response events for - " + func.responseEventsString %>
 <%         } -%>
 <%-      "}" -%>
 <%-  %>
-<%     } -%>
 <%   }) -%>
 <% } -%>
 

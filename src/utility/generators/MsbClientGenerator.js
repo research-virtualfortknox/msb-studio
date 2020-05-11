@@ -61,6 +61,20 @@ export default class MsbClientGenerator {
   }
 
   /**
+   * Remove all events with msb connection states ("CONNECTED", "UNCONNECTED")
+   * @param {events} List of events
+   * @returns {events} events withoud msb connection states
+   */
+  removeEventsWithMsbConnectionStates (events) {
+    if (events) {
+      events = events.filter(function (event, index) {
+        return ( event.eventId !== 'CONNECTED' && event.eventId !== 'UNCONNECTED')
+      })
+    }
+    return events
+  }
+
+  /**
    * Transform a list of events into a list of functions
    * @param {events} events
    * @returns {functions} functions
@@ -70,6 +84,7 @@ export default class MsbClientGenerator {
     if (functions) {
       functions.forEach(function (func, index, theArray) {
         func.functionId = func.eventId + '_FUNCTION'
+        theArray[index] = func
       })
     }
     return functions
@@ -85,6 +100,7 @@ export default class MsbClientGenerator {
     if (events) {
       events.forEach(function (event, index, theArray) {
         event.eventId = event.functionId + '_EVENT'
+        theArray[index] = event
       })
     }
     return events

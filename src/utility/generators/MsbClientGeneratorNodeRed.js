@@ -61,12 +61,29 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
    * @param {MsbSelfDescriptionUtil} msbSelfDescriptionUtil
    */
   generateCode (msbSelfDescriptionUtil) {
+    var generateCounterpart = super.getGenerateCounterpart()
+    var settings = msbSelfDescriptionUtil.getSettings()
+    var params = msbSelfDescriptionUtil.getConfigurationParamsAsArray()
+    var events = msbSelfDescriptionUtil.getEvents()
+    var functions = msbSelfDescriptionUtil.getFunctions()
+    
+    events = this.removeEventsWithMsbConnectionStates(events)
+    var eventsForTransformation = events
+    var functionsForTransformation = functions
+    if (generateCounterpart) {
+      settings = this.updateSettingsForCounterpart(settings)
+      events = this.transformFunctionsToEvents(functionsForTransformation)
+      functions = this.transformEventsToFunctions(eventsForTransformation)
+    } else {
+      functions = this.addFunctionResponseEventsString(functions)
+    }
+
     // generate the flow json file
     this.generateMainFile(
-      msbSelfDescriptionUtil.getSettings(),
-      msbSelfDescriptionUtil.getConfigurationParamsAsArray(),
-      msbSelfDescriptionUtil.getEvents(),
-      msbSelfDescriptionUtil.getFunctions()
+      settings,
+      params,
+      events,
+      functions
     )
   }
 
@@ -77,15 +94,11 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
    * @param {[Function]} functions
    */
   generateMainFile (settings, params, events, functions) {
-    var generateCounterpart = super.getGenerateCounterpart()
     var file = this.getFileByName('msb-client-flow.json')
     let template = ejs.compile(file.content)
 
     settings.msbObjectNodeId = uuidv4()
     settings.debugNodeId = uuidv4()
-    if (generateCounterpart) {
-      settings = this.updateSettingsForCounterpart(settings)
-    }
 
     // TODO: Support complex objects in events an functions
     // remove complex events
@@ -112,25 +125,11 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
     // add node red nodeId to events
     functions = this.addNodeRedNodeIds(functions)
 
-    var templateData = {}
-    // if a counterpart is generated, switch events and functions
-    if (!this.generateCounterpart) {
-      functions = this.addFunctionResponseEventsString(functions)
-      templateData = {
-        generateCounterpart: generateCounterpart,
-        settings: settings,
-        params: params,
-        events: events,
-        functions: functions
-      }
-    } else {
-      templateData = {
-        generateCounterpart: generateCounterpart,
-        settings: settings,
-        params: params,
-        events: this.transformFunctionsToEvents(functions),
-        functions: this.transformEventsToFunctions(events)
-      }
+    var templateData = {
+      settings: settings,
+      params: params,
+      events: events,
+      functions: functions
     }
     file.content = template(templateData)
     this.updateFile(file)
@@ -217,6 +216,15 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
    */
   updateSettingsForCounterpart (settings) {
     return super.updateSettingsForCounterpart(settings)
+  }
+
+  /**
+   * Remove all events with msb connection states ("CONNECTED", "UNCONNECTED")
+   * @param {events} List of events
+   * @returns {events} events withoud msb connection states
+   */
+  removeEventsWithMsbConnectionStates (events) {
+    return super.removeEventsWithMsbConnectionStates(events)
   }
 
   /**

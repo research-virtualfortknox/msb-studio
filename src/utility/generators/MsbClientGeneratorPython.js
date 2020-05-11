@@ -76,15 +76,32 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
    * @param {MsbSelfDescriptionUtil} msbSelfDescriptionUtil
    */
   generateCode (msbSelfDescriptionUtil) {
+    var generateCounterpart = super.getGenerateCounterpart()
+    var settings = msbSelfDescriptionUtil.getSettings()
+    var params = msbSelfDescriptionUtil.getConfigurationParamsAsArray()
+    var events = msbSelfDescriptionUtil.getEvents()
+    var functions = msbSelfDescriptionUtil.getFunctions()
+    
+    events = this.removeEventsWithMsbConnectionStates(events)
+    var eventsForTransformation = events
+    var functionsForTransformation = functions
+    if (generateCounterpart) {
+      settings = this.updateSettingsForCounterpart(settings)
+      events = this.transformFunctionsToEvents(functionsForTransformation)
+      functions = this.transformEventsToFunctions(eventsForTransformation)
+    } else {
+      functions = this.addFunctionResponseEventsString(functions)
+    }
+
     // add client basic settings
     this.generateApplicationProperties(
-      msbSelfDescriptionUtil.getSettings()
+      settings
     )
     // add configuration params
     this.generateMainFile(
-      msbSelfDescriptionUtil.getConfigurationParamsAsArray(),
-      msbSelfDescriptionUtil.getEvents(),
-      msbSelfDescriptionUtil.getFunctions()
+      params,
+      events,
+      functions
     )
   }
 
@@ -93,21 +110,10 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
    * @param {object} settings {type, uuid, name, description, token}
    */
   generateApplicationProperties (settings) {
-    var generateCounterpart = super.getGenerateCounterpart()
     var file = this.getFileByName('application.properties')
     let template = ejs.compile(file.content)
 
-    var generatedUuid
-    var generatedToken
-    if (generateCounterpart) {
-      generatedUuid = uuidv4()
-      generatedToken = generatedUuid.substring(0, 7)
-    }
-
     var templateData = {
-      generateCounterpart: generateCounterpart,
-      generatedUuid: generatedUuid,
-      generatedToken: generatedToken,
       settings: settings
     }
     file.content = template(templateData)
@@ -123,24 +129,50 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
   generateMainFile (params, events, functions) {
     var file = this.getFileByName('main.py')
     let template = ejs.compile(file.content)
-    var templateData = {}
-    // if a counterpart is generated, switch events and functions
-    if (!this.generateCounterpart) {
-      functions = this.addFunctionResponseEventsString(functions)
-      templateData = {
+
+    var templateData = {
         params: params,
         events: events,
         functions: functions
-      }
-    } else {
-      templateData = {
-        params: params,
-        events: functions,
-        functions: events
-      }
     }
     file.content = template(templateData)
     this.updateFile(file)
+  }
+
+  /**
+   * Update msb client basic settings (uuid, name, token) for counterpart generation
+   * @param {settings} settings
+   * @returns {settings} settings
+   */
+  updateSettingsForCounterpart (settings) {
+    return super.updateSettingsForCounterpart(settings)
+  }
+
+  /**
+   * Remove all events with msb connection states ("CONNECTED", "UNCONNECTED")
+   * @param {events} List of events
+   * @returns {events} events withoud msb connection states
+   */
+  removeEventsWithMsbConnectionStates (events) {
+    return super.removeEventsWithMsbConnectionStates(events)
+  }
+
+  /**
+   * Transform a list of events into a list of functions
+   * @param {events} events
+   * @returns {functions} functions
+   */
+  transformEventsToFunctions (events) {
+    return super.transformEventsToFunctions(events)
+  }
+
+  /**
+   * Transform a list of functions into a list of events
+   * @param {functions} functions
+   * @returns {events} events
+   */
+  transformFunctionsToEvents (functions) {
+    return super.transformFunctionsToEvents(functions)
   }
 
   /**
