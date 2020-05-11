@@ -83,12 +83,8 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
 
     settings.msbObjectNodeId = uuidv4()
     settings.debugNodeId = uuidv4()
-
-    var generatedUuid
-    var generatedToken
     if (generateCounterpart) {
-      generatedUuid = uuidv4()
-      generatedToken = generatedUuid.substring(0, 7)
+      settings = this.updateSettingsForCounterpart(settings)
     }
 
     // TODO: Support complex objects in events an functions
@@ -122,8 +118,6 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
       functions = this.addFunctionResponseEventsString(functions)
       templateData = {
         generateCounterpart: generateCounterpart,
-        generatedUuid: generatedUuid,
-        generatedToken: generatedToken,
         settings: settings,
         params: params,
         events: events,
@@ -132,12 +126,10 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
     } else {
       templateData = {
         generateCounterpart: generateCounterpart,
-        generatedUuid: generatedUuid,
-        generatedToken: generatedToken,
         settings: settings,
         params: params,
-        events: functions,
-        functions: events
+        events: this.transformFunctionsToEvents(functions),
+        functions: this.transformEventsToFunctions(events)
       }
     }
     file.content = template(templateData)
@@ -216,6 +208,33 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
       })
     }
     return eventsOrFunctions
+  }
+
+  /**
+   * Update msb client basic settings (uuid, name, token) for counterpart generation
+   * @param {settings} settings
+   * @returns {settings} settings
+   */
+  updateSettingsForCounterpart (settings) {
+    return super.updateSettingsForCounterpart(settings)
+  }
+
+  /**
+   * Transform a list of events into a list of functions
+   * @param {events} events
+   * @returns {functions} functions
+   */
+  transformEventsToFunctions (events) {
+    return super.transformEventsToFunctions(events)
+  }
+
+  /**
+   * Transform a list of functions into a list of events
+   * @param {functions} functions
+   * @returns {events} events
+   */
+  transformFunctionsToEvents (functions) {
+    return super.transformFunctionsToEvents(functions)
   }
 
   /**

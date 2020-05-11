@@ -2,19 +2,10 @@
     {
         "id": "<%= settings.msbObjectNodeId -%>",
         "type": "msb-object",
-<% if (generateCounterpart) { -%>
-        "uuid": "<%= generatedUuid -%>",
-        "name": "<%= settings.name -%>_counterpart",
-<% } else { -%>
         "uuid": "<%= settings.uuid -%>",
         "name": "<%= settings.name -%>",
-<% } -%>
         "description": "<%= settings.description -%>",
-<% if (generateCounterpart) { -%>
-        "token": "<%= generatedToken -%>",
-<% } else { -%>
         "token": "<%= settings.token -%>",
-<% } -%>
         "serviceType": "<%= settings.type -%>",
         "url": "<url-of-running-msb-websocket-interface> e.g. ws://localhost:8085",
         "outputs": <%= functions.length + 1 -%>,
@@ -36,9 +27,9 @@
 <%   events.forEach(function(event){ -%>
 <%# TODO: Add support for complex objects -%>
             {
-                "name": "<%- (event.eventId ? event.eventId : event.functionId + '_EVENT') -%>",
+                "name": "<%= event.eventId -%>",
                 "dataTypeName": "<%- (event.dataFormat.dataObject.format ? event.dataFormat.dataObject.format : event.dataFormat.dataObject.type) -%>"
-            }<%= (events[events.length-1].eventId != event.eventId) ? "," : "" %><%= (events[events.length-1].functionId != event.functionId) ? "," : "" %>
+            }<%= (events[events.length-1].eventId != event.eventId) ? "," : "" %>
 <%   }) -%>
 <% } -%>
         ],
@@ -47,10 +38,10 @@
 <%   functions.forEach(function(func, index){ -%>
 <%# TODO: Add support for complex objects -%>
             {
-                "name": "<%- (func.functionId ? func.functionId : func.eventId + '_FUNCTION') -%>",
+                "name": "<%= func.functionId -%>",
                 "dataTypeName": "<%- (func.dataFormat.dataObject.format ? func.dataFormat.dataObject.format : func.dataFormat.dataObject.type) -%>",
                 "output": "<%= index + 1  -%>"
-            }<%= (functions[functions.length-1].functionId != func.functionId) ? "," : "" %><%= (functions[functions.length-1].eventId != func.eventId) ? "," : "" %>
+            }<%= (functions[functions.length-1].functionId != func.functionId) ? "," : "" %>
 <%   }) -%>
 <% } -%>
         ],
@@ -61,7 +52,7 @@
 <%   functions.forEach(function(func, index){ -%>
             [
                 "<%= settings.debugNodeId -%>"
-            ]<%= (functions[functions.length-1].functionId != func.functionId) ? "," : "" %><%= (functions[functions.length-1].eventId != func.eventId) ? "," : "" %>
+            ]<%= (functions[functions.length-1].functionId != func.functionId) ? "," : "" %>
 <%   }) -%>
 <% } -%>
         ]
@@ -72,8 +63,8 @@
     {
         "id": "<%= event.nodeId -%>",
         "type": "msb-event",
-        "name": "<%- (event.eventId ? event.eventId : event.functionId + '_EVENT') -%>",
-        "event": "<%- (event.eventId ? event.eventId : event.functionId + '_EVENT') -%>",
+        "name": "<%= event.eventId -%>",
+        "event": "<%= event.eventId -%>",
         "x": 200,
         "y": <%= (index == 0 ? index : index + '0')  -%>,
         "wires": [

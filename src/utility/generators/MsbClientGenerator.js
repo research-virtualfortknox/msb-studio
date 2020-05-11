@@ -48,28 +48,46 @@ export default class MsbClientGenerator {
   }
 
   /**
-   * Remove all events or functions with a complex object in dataFormat
-   * @param {eventsOrFunctions} List of events or functions
-   * @returns {eventsOrFunctions} eventsOrFunctions
+   * Update msb client basic settings (uuid, name, token) for counterpart generation
+   * @param {settings} settings
+   * @returns {settings} settings
    */
-  removeEventsOrFunctionsWithComplexObjects (eventsOrFunctions) {
-    if (eventsOrFunctions) {
-      eventsOrFunctions = eventsOrFunctions.filter(function (eventOrFunction, index) {
-        return (
-          (eventOrFunction.eventId ? eventOrFunction.eventId : eventOrFunction.functionId) !== 'CONNECTED' &&
-          (eventOrFunction.eventId ? eventOrFunction.eventId : eventOrFunction.functionId) !== 'UNCONNECTED' &&
-          (
-            !eventOrFunction.dataFormat.dataObject ||
-              (
-                eventOrFunction.dataFormat.dataObject &&
-                eventOrFunction.dataFormat.dataObject.hasOwnProperty('type') &&
-                eventOrFunction.dataFormat.dataObject.type !== 'object' &&
-                !eventOrFunction.dataFormat.dataObject.hasOwnProperty('$ref'))
-          )
-        )
+  updateSettingsForCounterpart (settings) {
+    const uuidv4 = require('uuid/v4')
+    settings.uuid = uuidv4()
+    settings.token = settings.uuid.substring(0, 7)
+    settings.name = settings.name + "_counterpart"
+    return settings
+  }
+
+  /**
+   * Transform a list of events into a list of functions
+   * @param {events} events
+   * @returns {functions} functions
+   */
+  transformEventsToFunctions (events) {
+    var functions = events
+    if (functions) {
+      functions.forEach(function (func, index, theArray) {
+        func.functionId = func.eventId + '_FUNCTION'
       })
     }
-    return eventsOrFunctions
+    return functions
+  }
+
+  /**
+   * Transform a list of functions into a list of events
+   * @param {functions} functions
+   * @returns {events} events
+   */
+  transformFunctionsToEvents (functions) {
+    var events = functions
+    if (events) {
+      events.forEach(function (event, index, theArray) {
+        event.eventId = event.functionId + '_EVENT'
+      })
+    }
+    return events
   }
 
   /**
@@ -103,6 +121,31 @@ export default class MsbClientGenerator {
       }
     }
     return functions
+  }
+
+  /**
+   * Remove all events or functions with a complex object in dataFormat
+   * @param {eventsOrFunctions} List of events or functions
+   * @returns {eventsOrFunctions} eventsOrFunctions
+   */
+  removeEventsOrFunctionsWithComplexObjects (eventsOrFunctions) {
+    if (eventsOrFunctions) {
+      eventsOrFunctions = eventsOrFunctions.filter(function (eventOrFunction, index) {
+        return (
+          (eventOrFunction.eventId ? eventOrFunction.eventId : eventOrFunction.functionId) !== 'CONNECTED' &&
+          (eventOrFunction.eventId ? eventOrFunction.eventId : eventOrFunction.functionId) !== 'UNCONNECTED' &&
+          (
+            !eventOrFunction.dataFormat.dataObject ||
+              (
+                eventOrFunction.dataFormat.dataObject &&
+                eventOrFunction.dataFormat.dataObject.hasOwnProperty('type') &&
+                eventOrFunction.dataFormat.dataObject.type !== 'object' &&
+                !eventOrFunction.dataFormat.dataObject.hasOwnProperty('$ref'))
+          )
+        )
+      })
+    }
+    return eventsOrFunctions
   }
 
   /**
