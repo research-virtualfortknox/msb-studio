@@ -400,7 +400,7 @@ export default Vue.extend({
         this.convertMsbSelfDescriptionToClient()
       // use quicktype to generate code
       } else {
-        if (this.targetOptions.targetLanguage === "Node-RED") {
+        if (this.targetOptions.targetLanguage === 'Node-RED') {
           this.codeTargett = 'Node-RED is supported if source format is MSB Self Description!'
         } else {
           this.runQuicktype(

@@ -48,6 +48,31 @@ export default class MsbClientGenerator {
   }
 
   /**
+   * Remove all events or functions with a complex object in dataFormat
+   * @param {eventsOrFunctions} List of events or functions
+   * @returns {eventsOrFunctions} eventsOrFunctions
+   */
+  removeEventsOrFunctionsWithComplexObjects (eventsOrFunctions) {
+    if (eventsOrFunctions) {
+      eventsOrFunctions = eventsOrFunctions.filter(function (eventOrFunction, index) {
+        return (
+          (eventOrFunction.eventId ? eventOrFunction.eventId : eventOrFunction.functionId) !== 'CONNECTED' &&
+          (eventOrFunction.eventId ? eventOrFunction.eventId : eventOrFunction.functionId) !== 'UNCONNECTED' &&
+          (
+            !eventOrFunction.dataFormat.dataObject ||
+              (
+                eventOrFunction.dataFormat.dataObject &&
+                eventOrFunction.dataFormat.dataObject.hasOwnProperty('type') &&
+                eventOrFunction.dataFormat.dataObject.type !== 'object' &&
+                !eventOrFunction.dataFormat.dataObject.hasOwnProperty('$ref'))
+          )
+        )
+      })
+    }
+    return eventsOrFunctions
+  }
+
+  /**
    * Add a string representing the response events to be added to the add function
    * @param {functions} functions
    * @returns {functions} functions with functions objects including a responseEventsString param

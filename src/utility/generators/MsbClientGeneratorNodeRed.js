@@ -93,15 +93,23 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
 
     // TODO: Support complex objects in events an functions
     // remove complex events
-    events = this.removeComplexObjects(events)
+    events = this.removeEventsOrFunctionsWithComplexObjects(events)
     // remove complex functions
-    functions = this.removeComplexObjects(functions)
+    functions = this.removeEventsOrFunctionsWithComplexObjects(functions)
 
     // TODO: Support no payload in events an functions
     // fix events with no payload
     events = this.fixDataFormatWithNoPayload(events)
     // fix functions with no payload
     functions = this.fixDataFormatWithNoPayload(functions)
+
+    // TODO: Support date-time in params, events an functions
+    // fix config params with "date-time" instead of "datetime"
+    params = this.fixConfigParamDataFormatWithTypeDateTime(params)
+    // fix events with "date-time" instead of "datetime"
+    events = this.fixEventOrFunctionDataFormatWithTypeDateTime(events)
+    // fix functions with "date-time" instead of "datetime"
+    functions = this.fixEventOrFunctionDataFormatWithTypeDateTime(functions)
 
     // add node red nodeId to events
     events = this.addNodeRedNodeIds(events)
@@ -137,31 +145,6 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
   }
 
   /**
-   * Remove all events or functions with complex objects in dataFormat
-   * @param {eventsOrFunctions} eventsOrFunctions
-   * @returns {eventsOrFunctions} eventsOrFunctions with removed ones
-   */
-  removeComplexObjects (eventsOrFunctions) {
-    if (eventsOrFunctions) {
-      eventsOrFunctions = eventsOrFunctions.filter(function (eventOrFunction, index) {
-        return (
-          (eventOrFunction.eventId ? eventOrFunction.eventId : eventOrFunction.functionId) !== 'CONNECTED' &&
-          (eventOrFunction.eventId ? eventOrFunction.eventId : eventOrFunction.functionId) !== 'UNCONNECTED' &&
-          (
-            !eventOrFunction.dataFormat.dataObject ||
-              (
-                eventOrFunction.dataFormat.dataObject &&
-                eventOrFunction.dataFormat.dataObject.hasOwnProperty('type') &&
-                eventOrFunction.dataFormat.dataObject.type !== 'object' &&
-                !eventOrFunction.dataFormat.dataObject.hasOwnProperty('$ref'))
-          )
-        )
-      })
-    }
-    return eventsOrFunctions
-  }
-
-  /**
    * Sets the dataFormat to string, if no payload is set in selfdesc
    * @param {eventsOrFunctions} eventsOrFunctions
    * @returns {eventsOrFunctions} eventsOrFunctions with updated dataFormats
@@ -180,6 +163,47 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
   }
 
   /**
+   * Sets the dataFormat type of events or functions to "datetime", if specified as "date-time"
+   * @param {eventsOrFunctions} eventsOrFunctions
+   * @returns {eventsOrFunctions} eventsOrFunctions with updated dataFormats
+   */
+  fixEventOrFunctionDataFormatWithTypeDateTime (eventsOrFunctions) {
+    if (eventsOrFunctions) {
+      eventsOrFunctions.forEach(function (eventOrFunction, index, theArray) {
+        if (
+          eventOrFunction.dataFormat.dataObject
+          && eventOrFunction.dataFormat.dataObject.hasOwnProperty('format')
+          && eventOrFunction.dataFormat.dataObject.format === 'date-time' 
+        ) {
+          eventOrFunction.dataFormat.dataObject.format = 'datetime'
+          theArray[index] = eventOrFunction
+        }
+      })
+    }
+    return eventsOrFunctions
+  }
+
+  /**
+   * Sets the dataFormat type of config params to "datetime", if specified as "date-time"
+   * @param {eventsOrFunctions} eventsOrFunctions
+   * @returns {eventsOrFunctions} eventsOrFunctions with updated dataFormats
+   */
+  fixConfigParamDataFormatWithTypeDateTime (configParams) {
+    if (configParams) {
+      configParams.forEach(function (configParam, index, theArray) {
+        if (
+          configParam.hasOwnProperty('format')
+          && configParam.format === 'date-time' 
+        ) {
+          configParam.format = 'datetime'
+          theArray[index] = configParam
+        }
+      })
+    }
+    return configParams
+  }
+
+  /**
    * Add node red ids to the events and functions in case they need to be wired
    * @param {eventsOrFunctions} eventsOrFunctions
    * @returns {eventsOrFunctions} eventsOrFunctions with updated node red ids
@@ -192,6 +216,15 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
       })
     }
     return eventsOrFunctions
+  }
+
+  /**
+   * Remove all events or functions with a complex object in dataFormat
+   * @param {eventsOrFunctions} List of events or functions
+   * @returns {eventsOrFunctions} eventsOrFunctions
+   */
+  removeEventsOrFunctionsWithComplexObjects (eventsOrFunctions) {
+    return super.removeEventsOrFunctionsWithComplexObjects(eventsOrFunctions)
   }
 
   /**

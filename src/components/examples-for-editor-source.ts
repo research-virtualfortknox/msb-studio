@@ -109,6 +109,18 @@ export const MsbSelfDescriptionExample = `{
             }
           }
         }
+      },
+      {
+        "@id": 3,
+        "eventId": "SIMPLE_EVENT",
+        "name": "Simple Event",
+        "description": "Event to send a message with a simple dataobject",
+        "dataFormat": {
+          "dataObject": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
       }
     ],
     "functions": [
