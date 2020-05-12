@@ -66,7 +66,7 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
     var params = msbSelfDescriptionUtil.getConfigurationParamsAsArray()
     var events = msbSelfDescriptionUtil.getEvents()
     var functions = msbSelfDescriptionUtil.getFunctions()
-    
+
     events = this.removeEventsWithMsbConnectionStates(events)
     var eventsForTransformation = events
     var functionsForTransformation = functions
@@ -162,9 +162,9 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
     if (eventsOrFunctions) {
       eventsOrFunctions.forEach(function (eventOrFunction, index, theArray) {
         if (
-          eventOrFunction.dataFormat.dataObject
-          && eventOrFunction.dataFormat.dataObject.hasOwnProperty('format')
-          && eventOrFunction.dataFormat.dataObject.format === 'date-time' 
+          eventOrFunction.dataFormat.dataObject &&
+          eventOrFunction.dataFormat.dataObject.hasOwnProperty('format') &&
+          eventOrFunction.dataFormat.dataObject.format === 'date-time'
         ) {
           eventOrFunction.dataFormat.dataObject.format = 'datetime'
           theArray[index] = eventOrFunction
@@ -183,8 +183,8 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
     if (configParams) {
       configParams.forEach(function (configParam, index, theArray) {
         if (
-          configParam.hasOwnProperty('format')
-          && configParam.format === 'date-time' 
+          configParam.hasOwnProperty('format') &&
+          configParam.format === 'date-time'
         ) {
           configParam.format = 'datetime'
           theArray[index] = configParam

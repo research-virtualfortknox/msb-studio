@@ -56,7 +56,7 @@ export default class MsbClientGenerator {
     const uuidv4 = require('uuid/v4')
     settings.uuid = uuidv4()
     settings.token = settings.uuid.substring(0, 7)
-    settings.name = settings.name + "_counterpart"
+    settings.name = settings.name + '_counterpart'
     return settings
   }
 
@@ -68,7 +68,7 @@ export default class MsbClientGenerator {
   removeEventsWithMsbConnectionStates (events) {
     if (events) {
       events = events.filter(function (event, index) {
-        return ( event.eventId !== 'CONNECTED' && event.eventId !== 'UNCONNECTED')
+        return (event.eventId !== 'CONNECTED' && event.eventId !== 'UNCONNECTED')
       })
     }
     return events

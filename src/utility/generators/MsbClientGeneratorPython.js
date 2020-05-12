@@ -81,7 +81,7 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
     var params = msbSelfDescriptionUtil.getConfigurationParamsAsArray()
     var events = msbSelfDescriptionUtil.getEvents()
     var functions = msbSelfDescriptionUtil.getFunctions()
-    
+
     events = this.removeEventsWithMsbConnectionStates(events)
     var eventsForTransformation = events
     var functionsForTransformation = functions
@@ -131,9 +131,9 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
     let template = ejs.compile(file.content)
 
     var templateData = {
-        params: params,
-        events: events,
-        functions: functions
+      params: params,
+      events: events,
+      functions: functions
     }
     file.content = template(templateData)
     this.updateFile(file)

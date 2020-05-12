@@ -81,7 +81,7 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
     var params = msbSelfDescriptionUtil.getConfigurationParamsAsArray()
     var events = msbSelfDescriptionUtil.getEvents()
     var functions = msbSelfDescriptionUtil.getFunctions()
-    
+
     // preparation
     events = this.removeEventsWithMsbConnectionStates(events)
     var eventsForTransformation = events
