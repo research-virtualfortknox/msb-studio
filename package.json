@@ -1,6 +1,6 @@
 {
   "name": "msb-studio",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "private": true,
   "description": "MSB Studio is a simple code-generation tool to the development of new MSB client projects easier.",
   "author": "Matthias Stoehr",
@@ -48,6 +48,7 @@
     "chai": "^4.1.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
+    "null-loader": "^4.0.0",
     "sass": "^1.26.3",
     "sass-loader": "^7.3.1",
     "typescript": "^3.8.3",

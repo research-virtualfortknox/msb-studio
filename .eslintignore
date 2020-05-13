@@ -1,1 +1,2 @@
 src/utility/templates/*
+tests/unit/expected_generator_results/*

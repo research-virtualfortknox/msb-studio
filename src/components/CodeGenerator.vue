@@ -19,6 +19,7 @@
         <v-row>
           <v-col>
             <v-select
+              dense
               label="Source Format"
               v-model="sourceOptions.sourceLanguage"
               :items="sourceLanguages"
@@ -27,6 +28,7 @@
           </v-col>
           <v-col v-if="sourceOptions.sourceLanguage != 'msbSelfDescription'">
             <v-text-field
+              dense
               v-model="targetOptions.topLevelName"
               :rules="[rules.required]"
               label="Top Level Name"
@@ -195,6 +197,7 @@
         <v-row>
           <v-col>
             <v-select
+              dense
               label="Target Language"
               v-model="targetOptions.targetLanguage"
               :items="targetLanguages"
@@ -315,7 +318,8 @@ export default Vue.extend({
       { text: 'Java', value: 'Java', format: 'java' },
       { text: 'C++', value: 'C++', format: 'c' },
       { text: 'C#', value: 'C#', format: 'csharp' },
-      { text: 'Json Schema', value: 'schema', format: 'json' }
+      { text: 'Json Schema', value: 'schema', format: 'json' },
+      { text: 'Node-RED Flow', value: 'Node-RED', format: 'json' }
     ]
     return {
       // options for source and target of code generation
@@ -391,23 +395,27 @@ export default Vue.extend({
       // reset fileSet
       this.fileSet = undefined
 
-      // use quicktype to generate code, if source is not an msb self descriptjion
-      if (this.sourceOptions.sourceLanguage !== 'msbSelfDescription') {
-        this.runQuicktype(
-          this.codeSource,
-          this.sourceOptions.sourceLanguage,
-          this.targetOptions.targetLanguage,
-          this.targetOptions.topLevelName,
-          this.targetOptions.justTypes,
-          ' '.repeat(4),
-          ['Please find more information here:', 'https://github.com/research-virtualfortknox']
-        ).then(result => {
-          console.debug(result)
-          this.codeTargett = result.lines.join('\n').trim()
-        })
       // use custom converter for msb self description
-      } else {
+      if (this.sourceOptions.sourceLanguage === 'msbSelfDescription') {
         this.convertMsbSelfDescriptionToClient()
+      // use quicktype to generate code
+      } else {
+        if (this.targetOptions.targetLanguage === 'Node-RED') {
+          this.codeTargett = 'Node-RED is supported if source format is MSB Self Description!'
+        } else {
+          this.runQuicktype(
+            this.codeSource,
+            this.sourceOptions.sourceLanguage,
+            this.targetOptions.targetLanguage,
+            this.targetOptions.topLevelName,
+            this.targetOptions.justTypes,
+            ' '.repeat(4),
+            ['Please find more information here:', 'https://github.com/research-virtualfortknox']
+          ).then(result => {
+            console.debug(result)
+            this.codeTargett = result.lines.join('\n').trim()
+          })
+        }
       }
     },
 
@@ -462,6 +470,10 @@ export default Vue.extend({
           this.codeTargett = 'Language supported, but no data model generatiion yet'
           break
         case 'Python':
+          // TODO: Also use quicktype with self description by getting the data model as json schema
+          this.codeTargett = 'Language supported, but no data model generatiion yet'
+          break
+        case 'Node-RED':
           // TODO: Also use quicktype with self description by getting the data model as json schema
           this.codeTargett = 'Language supported, but no data model generatiion yet'
           break
@@ -686,7 +698,7 @@ export default Vue.extend({
   background: black !important;
 }
 .my-code-editor{
-  max-height: calc(100vh - 260px);;
+  max-height: calc(100vh - 230px);;
   background: black;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
@@ -726,7 +738,7 @@ export default Vue.extend({
   border: 0px solid #ccc !important;
 }
 .code-genetation-container{
-  max-height: calc(100vh - 260px);;
+  max-height: calc(100vh - 230px);;
   border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 5px;
 }

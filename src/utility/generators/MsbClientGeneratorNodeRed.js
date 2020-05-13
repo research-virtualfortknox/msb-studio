@@ -2,14 +2,11 @@
 
 import MsbClientGenerator from './MsbClientGenerator'
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import applicationPropertiesFileContent from '!!raw-loader!../templates/msb-client-websocket-nodejs/application.properties'
+import flowJsonFileContent from '!!raw-loader!../templates/msb-client-websocket-nodered/msb-client-flow.json.raw'
 // eslint-disable-next-line import/no-webpack-loader-syntax
-import indexFileContent from '!!raw-loader!../templates/msb-client-websocket-nodejs/index.js'
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import packageJsonFileContent from '!!raw-loader!../templates/msb-client-websocket-nodejs/package.json.raw'
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import readmeFileContent from '!!raw-loader!../templates/msb-client-websocket-nodejs/README.md'
+import readmeFileContent from '!!raw-loader!../templates/msb-client-websocket-nodered/README.md'
 import MsbSelfDescriptionUtil from '../MsbSelfDescriptionUtil'
+import { isUnparsedTextLike } from 'typescript'
 
 // Template Enginge
 let ejs = require('ejs')
@@ -24,25 +21,13 @@ const END_DELIMITER = ' --}}'
  * Generator to update your app template files
  * with all parts of a self description (settings, params, events, functions)
  */
-export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
+export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
   constructor (generateCounterpart = false, msbSelfDescriptionUtil) {
     // setup all files from the teamplte here
     var fileSet = [
       {
-        fileName: 'application.properties',
-        content: applicationPropertiesFileContent,
-        targetPath: '', // use folder1/folder2/
-        format: 'properties'
-      },
-      {
-        fileName: 'index.js',
-        content: indexFileContent,
-        targetPath: '',
-        format: 'js'
-      },
-      {
-        fileName: 'package.json',
-        content: packageJsonFileContent,
+        fileName: 'msb-client-flow.json',
+        content: flowJsonFileContent,
         targetPath: '',
         format: 'json'
       },
@@ -82,7 +67,6 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
     var events = msbSelfDescriptionUtil.getEvents()
     var functions = msbSelfDescriptionUtil.getFunctions()
 
-    // preparation
     events = this.removeEventsWithMsbConnectionStates(events)
     var eventsForTransformation = events
     var functionsForTransformation = functions
@@ -94,36 +78,13 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
       functions = this.addFunctionResponseEventsString(functions)
     }
 
-    // add client basic settings
-    this.generateApplicationProperties(
-      settings
-    )
-
-    // add configuration params
+    // generate the flow json file
     this.generateMainFile(
+      settings,
       params,
       events,
       functions
     )
-  }
-
-  /**
-   * Add the basic settings for your service
-   * @param {object} settings {type, uuid, name, description, token}
-   */
-  generateApplicationProperties (settings) {
-    var file = this.getFileByName('application.properties')
-    let template = ejs.compile(file.content)
-    var file2 = this.getFileByName('package.json')
-    let template2 = ejs.compile(file2.content)
-
-    var templateData = {
-      settings: settings
-    }
-    file.content = template(templateData)
-    this.updateFile(file)
-    file2.content = template2(templateData)
-    this.updateFile(file2)
   }
 
   /**
@@ -132,17 +93,120 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
    * @param {[Event]} events
    * @param {[Function]} functions
    */
-  generateMainFile (params, events, functions) {
-    var file = this.getFileByName('index.js')
+  generateMainFile (settings, params, events, functions) {
+    var file = this.getFileByName('msb-client-flow.json')
     let template = ejs.compile(file.content)
 
+    settings.msbObjectNodeId = uuidv4()
+    settings.debugNodeId = uuidv4()
+
+    // TODO: Support complex objects in events an functions
+    // remove complex events
+    events = this.removeEventsOrFunctionsWithComplexObjects(events)
+    // remove complex functions
+    functions = this.removeEventsOrFunctionsWithComplexObjects(functions)
+
+    // TODO: Support no payload in events an functions
+    // fix events with no payload
+    events = this.fixDataFormatWithNoPayload(events)
+    // fix functions with no payload
+    functions = this.fixDataFormatWithNoPayload(functions)
+
+    // TODO: Support date-time in params, events an functions
+    // fix config params with "date-time" instead of "datetime"
+    params = this.fixConfigParamDataFormatWithTypeDateTime(params)
+    // fix events with "date-time" instead of "datetime"
+    events = this.fixEventOrFunctionDataFormatWithTypeDateTime(events)
+    // fix functions with "date-time" instead of "datetime"
+    functions = this.fixEventOrFunctionDataFormatWithTypeDateTime(functions)
+
+    // add node red nodeId to events
+    events = this.addNodeRedNodeIds(events)
+    // add node red nodeId to events
+    functions = this.addNodeRedNodeIds(functions)
+
     var templateData = {
+      settings: settings,
       params: params,
       events: events,
       functions: functions
     }
     file.content = template(templateData)
     this.updateFile(file)
+  }
+
+  /**
+   * Sets the dataFormat to string, if no payload is set in selfdesc
+   * @param {eventsOrFunctions} eventsOrFunctions
+   * @returns {eventsOrFunctions} eventsOrFunctions with updated dataFormats
+   */
+  fixDataFormatWithNoPayload (eventsOrFunctions) {
+    if (eventsOrFunctions) {
+      eventsOrFunctions.forEach(function (eventOrFunction, index, theArray) {
+        if (!eventOrFunction.dataFormat.dataObject) {
+          eventOrFunction.dataFormat.dataObject = {}
+          eventOrFunction.dataFormat.dataObject.type = 'string'
+          theArray[index] = eventOrFunction
+        }
+      })
+    }
+    return eventsOrFunctions
+  }
+
+  /**
+   * Sets the dataFormat type of events or functions to "datetime", if specified as "date-time"
+   * @param {eventsOrFunctions} eventsOrFunctions
+   * @returns {eventsOrFunctions} eventsOrFunctions with updated dataFormats
+   */
+  fixEventOrFunctionDataFormatWithTypeDateTime (eventsOrFunctions) {
+    if (eventsOrFunctions) {
+      eventsOrFunctions.forEach(function (eventOrFunction, index, theArray) {
+        if (
+          eventOrFunction.dataFormat.dataObject &&
+          eventOrFunction.dataFormat.dataObject.hasOwnProperty('format') &&
+          eventOrFunction.dataFormat.dataObject.format === 'date-time'
+        ) {
+          eventOrFunction.dataFormat.dataObject.format = 'datetime'
+          theArray[index] = eventOrFunction
+        }
+      })
+    }
+    return eventsOrFunctions
+  }
+
+  /**
+   * Sets the dataFormat type of config params to "datetime", if specified as "date-time"
+   * @param {eventsOrFunctions} eventsOrFunctions
+   * @returns {eventsOrFunctions} eventsOrFunctions with updated dataFormats
+   */
+  fixConfigParamDataFormatWithTypeDateTime (configParams) {
+    if (configParams) {
+      configParams.forEach(function (configParam, index, theArray) {
+        if (
+          configParam.hasOwnProperty('format') &&
+          configParam.format === 'date-time'
+        ) {
+          configParam.format = 'datetime'
+          theArray[index] = configParam
+        }
+      })
+    }
+    return configParams
+  }
+
+  /**
+   * Add node red ids to the events and functions in case they need to be wired
+   * @param {eventsOrFunctions} eventsOrFunctions
+   * @returns {eventsOrFunctions} eventsOrFunctions with updated node red ids
+   */
+  addNodeRedNodeIds (eventsOrFunctions) {
+    if (eventsOrFunctions) {
+      eventsOrFunctions.forEach(function (eventOrFunction, index, theArray) {
+        eventOrFunction.nodeId = uuidv4()
+        theArray[index] = eventOrFunction
+      })
+    }
+    return eventsOrFunctions
   }
 
   /**
@@ -179,6 +243,15 @@ export default class MsbClientGeneratorNodeJs extends MsbClientGenerator {
    */
   transformFunctionsToEvents (functions) {
     return super.transformFunctionsToEvents(functions)
+  }
+
+  /**
+   * Remove all events or functions with a complex object in dataFormat
+   * @param {eventsOrFunctions} List of events or functions
+   * @returns {eventsOrFunctions} eventsOrFunctions
+   */
+  removeEventsOrFunctionsWithComplexObjects (eventsOrFunctions) {
+    return super.removeEventsOrFunctionsWithComplexObjects(eventsOrFunctions)
   }
 
   /**

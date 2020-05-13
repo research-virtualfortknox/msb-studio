@@ -1,5 +1,7 @@
 # MSB Studio
 
+[![Build Status](https://travis-ci.org/research-virtualfortknox/msb-studio.svg?branch=master)](https://travis-ci.org/research-virtualfortknox/msb-studio)
+
 MSB Studio is a simple WebIDE to facilitate the integration of your services by providing auto-generated client code for a quick-start.
 
 It is currenlty in the state of a proof-of-concept. Feel free to test it and send us your feedback by adding an issue.
@@ -21,6 +23,7 @@ Features:
 Supported client languages:
 - NodeJs
 - Python
+- Node-RED Flow
 
 Languages supported in a future release:
 - Java

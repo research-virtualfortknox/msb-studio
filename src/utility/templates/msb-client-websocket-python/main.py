@@ -15,14 +15,12 @@ global myMsbClient
 # function implementations
 <% if (functions) { -%>
 <%   functions.forEach(function(func){ -%>
-<%     if ((func.functionId ? func.functionId : func.eventId) !== 'CONNECTED' && (func.functionId ? func.functionId : func.eventId) !== 'UNCONNECTED'){  -%>
-<%-      "def handle_" + (func.functionId ? func.functionId : func.eventId + '_FUNCTION') + "(msg):" %>
-<%-        "    print('handle_" + (func.functionId ? func.functionId : func.eventId + '_FUNCTION') + ": ' + str(msg[\"dataObject\"]))" -%>
+<%-      "def handle_" + func.functionId + "(msg):" %>
+<%-        "    print('handle_" + func.functionId + ": ' + str(msg[\"dataObject\"]))" -%>
 <%         if (func.responseEventsString) { -%>
 <%-          "\n    # TODO: Send response events for - " + func.responseEventsString -%>
 <%         } -%>
 <%-  %>
-<%     } -%>
 <%   }) -%>
 <% } -%>
 
@@ -58,33 +56,29 @@ def setupMsbClient():
     # add events
 <% if (events) { -%>
 <%   events.forEach(function(event){ -%>
-<%     if (event.eventId !== 'CONNECTED' && event.eventId !== 'UNCONNECTED'){  -%>
 <%-      "    myMsbClient.addEvent(" %>
-<%-        "        event='" + (event.eventId ? event.eventId : event.functionId + '_EVENT') + "'," %>
+<%-        "        event='" + event.eventId + "'," %>
 <%-        "        event_name='" + event.name + "'," %>
 <%-        "        event_description='" + event.description + "'," %>
 <%-        "        event_dataformat=" + '\n' + JSON.stringify(event.dataFormat, null, 4).replace(/^(?=.)/gm, ' '.repeat(8)) + "," %>
 <%-        "        event_priority=0, # 0 (LOW), 1 (MEDIUM), 2 (HIGH)" %>
 <%-      "    )" -%>
 <%-  %>
-<%     } -%>
 <%   }) -%>
 <% } -%>
 
     # add functions
 <% if (functions) { -%>
 <%   functions.forEach(function(func){ -%>
-<%     if ((func.functionId ? func.functionId : func.eventId) !== 'CONNECTED' && (func.functionId ? func.functionId : func.eventId) !== 'UNCONNECTED'){  -%>
 <%-      "    myMsbClient.addFunction(" %>
-<%-        "        function='" + (func.functionId ? func.functionId : func.eventId + '_FUNCTION') + "'," %>
+<%-        "        function='" + func.functionId + "'," %>
 <%-        "        function_name='" + func.name + "'," %>
 <%-        "        function_description='" + func.description + "'," %>
 <%-        "        function_dataformat=" + '\n' + JSON.stringify(func.dataFormat, null, 4).replace(/^(?=.)/gm, ' '.repeat(8)) + "," %>
-<%-        "        fnpointer=" + 'handle_' + (func.functionId ? func.functionId : func.eventId + '_FUNCTION') + "," %>
+<%-        "        fnpointer=" + 'handle_' + func.functionId + "," %>
 <%-        "        responseEvents=[" + (func.responseEventsString ? func.responseEventsString : "") + "]," %>
 <%-      "    )" -%>
 <%-  %>
-<%     } -%>
 <%   }) -%>
 <% } -%>
 

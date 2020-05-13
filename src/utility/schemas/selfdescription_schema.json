@@ -74,7 +74,7 @@
             "enum": [ "string", "boolean", "integer", "number" ]
           },
           "format": {
-            "enum": [ "int32", "int64", "float", "double", "date-time" , null]
+            "enum": [ "int32", "int64", "float", "double", "byte", "date-time" , null]
           }
         },
         "if": {

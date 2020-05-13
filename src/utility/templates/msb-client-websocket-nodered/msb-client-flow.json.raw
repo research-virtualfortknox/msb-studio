@@ -1,0 +1,91 @@
+[
+    {
+        "id": "<%= settings.msbObjectNodeId -%>",
+        "type": "msb-object",
+        "uuid": "<%= settings.uuid -%>",
+        "name": "<%= settings.name -%>",
+        "description": "<%= settings.description -%>",
+        "token": "<%= settings.token -%>",
+        "serviceType": "<%= settings.type -%>",
+        "url": "<url-of-running-msb-websocket-interface> e.g. ws://localhost:8085",
+        "outputs": <%= functions.length + 1 -%>,
+        "x": 450,
+        "y": 0,
+        "configList": [
+<% if (params) { -%>
+<%   params.forEach(function(param){ -%>
+            {
+                "name": "<%- param.key -%>",
+                "dataTypeName": "<%- (param.format ? param.format : param.type) -%>",
+                "configValue": "<%- param.value -%>"
+            }<%= (params[params.length-1].key != param.key) ? "," : "" %>
+<%   }) -%>
+<% } -%>
+        ],
+        "eventList": [
+<% if (events) { -%>
+<%   events.forEach(function(event){ -%>
+<%# TODO: Add support for complex objects -%>
+            {
+                "name": "<%= event.eventId -%>",
+                "dataTypeName": "<%- (event.dataFormat.dataObject.format ? event.dataFormat.dataObject.format : event.dataFormat.dataObject.type) -%>"
+            }<%= (events[events.length-1].eventId != event.eventId) ? "," : "" %>
+<%   }) -%>
+<% } -%>
+        ],
+        "functionList": [
+<% if (functions) { -%>
+<%   functions.forEach(function(func, index){ -%>
+<%# TODO: Add support for complex objects -%>
+            {
+                "name": "<%= func.functionId -%>",
+                "dataTypeName": "<%- (func.dataFormat.dataObject.format ? func.dataFormat.dataObject.format : func.dataFormat.dataObject.type) -%>",
+                "output": "<%= index + 1  -%>"
+            }<%= (functions[functions.length-1].functionId != func.functionId) ? "," : "" %>
+<%   }) -%>
+<% } -%>
+        ],
+        "wires": [
+            [
+                "<%= settings.debugNodeId -%>"
+            ]<% if (functions) { -%>,
+<%   functions.forEach(function(func, index){ -%>
+            [
+                "<%= settings.debugNodeId -%>"
+            ]<%= (functions[functions.length-1].functionId != func.functionId) ? "," : "" %>
+<%   }) -%>
+<% } -%>
+        ]
+    },
+<% if (events) { -%>
+<%   events.forEach(function(event, index){ -%>
+<%# TODO: Add support for complex objects -%>
+    {
+        "id": "<%= event.nodeId -%>",
+        "type": "msb-event",
+        "name": "<%= event.eventId -%>",
+        "event": "<%= event.eventId -%>",
+        "x": 200,
+        "y": <%= (index == 0 ? index : index * '40')  -%>,
+        "wires": [
+            [
+                "<%= settings.msbObjectNodeId -%>"
+            ]
+        ]
+    },
+<%   }) -%>
+<% } -%>
+    {
+        "id": "<%= settings.debugNodeId -%>",
+        "type": "debug",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "x": 700,
+        "y": 0,
+        "wires": []
+    }
+]

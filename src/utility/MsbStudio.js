@@ -3,6 +3,7 @@
 import MsbSelfDescriptionUtil from './MsbSelfDescriptionUtil.js'
 import MsbClientGeneratorNodeJs from './generators/MsbClientGeneratorNodeJs.js'
 import MsbClientGeneratorPython from './generators/MsbClientGeneratorPython.js'
+import MsbClientGeneratorNodeRed from './generators/MsbClientGeneratorNodeRed.js'
 
 /**
  * MsbStudio to auto-generate code for apps and other services based on msb self-description
@@ -31,6 +32,9 @@ export default class MsbStudio {
         break
       case 'Python':
         this.msbClientGenerator = new MsbClientGeneratorPython(generateCounterpart, this.msbSelfDescriptionUtil)
+        break
+      case 'Node-RED':
+        this.msbClientGenerator = new MsbClientGeneratorNodeRed(generateCounterpart, this.msbSelfDescriptionUtil)
         break
       default:
         return
