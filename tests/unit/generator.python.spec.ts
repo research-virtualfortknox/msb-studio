@@ -16,6 +16,17 @@ import mainFileContent from '!!raw-loader!./expected_generator_results/Python_My
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import pipfileFileContent from '!!raw-loader!./expected_generator_results/Python_MySampleApp_client/Pipfile'
 
+// counterpart files
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import applicationPropertiesFileContentCounterpart from '!!raw-loader!./expected_generator_results/Python_MySampleApp_client_counterpart/application.properties'
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import mainFileContentCounterpart from '!!raw-loader!./expected_generator_results/Python_MySampleApp_client_counterpart/main.py'
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import pipfileFileContentCounterpart from '!!raw-loader!./expected_generator_results/Python_MySampleApp_client_counterpart/Pipfile'
+
 // ajv is used to validate specified dataformats of the msb client
 const Ajv = require('ajv')
 // array of unknown format names will be ignored
@@ -90,6 +101,68 @@ describe('MSB Python Client Generator', () => {
     expect(verifiedFileMainFile).to.equal(true)
     expect(verifiedFilePipfile).to.equal(true)
   })
+
+  it('validate generated project files (counterpart)', () => {
+    // check first if the source msb selfdesc file is valid according to its json schema
+    expect(validateMsbSelfDescriptionBySchema(msbSelfDescTestContent)).to.equal(true)
+
+    const wrapper = shallowMount(CodeGenerator, {
+      data () {
+        return {
+          codeSource: JSON.stringify(msbSelfDescTestContent),
+          sourceOptions: {
+            sourceLanguage: 'msbSelfDescription'
+          },
+          targetOptions: {
+            targetLanguage: 'Python',
+            generateCounterpart: true
+          },
+          fileSet: undefined
+        }
+      },
+      propsData: {
+      },
+      localVue,
+      // @ts-ignore
+      vuetify
+    })
+    expect(wrapper.vm.$data.sourceOptions.sourceLanguage).to.equal('msbSelfDescription')
+    expect(wrapper.vm.$data.targetOptions.targetLanguage).to.equal('Python')
+    expect(wrapper.vm.$data.targetOptions.generateCounterpart).to.equal(true)
+
+    var verifiedFileApplicationProperties = false
+    var verifiedFileMainFile = false
+    var verifiedFilePipfile = false
+
+    // current generated files
+    var generatedFileSet = wrapper.vm.$data.fileSet
+
+    // compare expected generator results with current generator results
+    // @ts-ignore
+    generatedFileSet.forEach(function (file) {
+      if (file.fileName === 'application.properties') {
+
+        var fileContentCounterpart = removeUuidAndTokenLinesFromApplicationProperties(file.content)
+        var fileContentCounterpartExpected = removeUuidAndTokenLinesFromApplicationProperties(applicationPropertiesFileContentCounterpart)
+
+        expect(fileContentCounterpart).to.equal(fileContentCounterpartExpected)
+        verifiedFileApplicationProperties = true
+      }
+      if (file.fileName === 'main.py') {
+        expect(file.content).to.equal(mainFileContentCounterpart)
+        verifiedFileMainFile = true
+      }
+      if (file.fileName === 'Pipfile') {
+        expect(file.content).to.equal(pipfileFileContentCounterpart)
+        verifiedFilePipfile = true
+      }
+    })
+
+    // verify that all files were tested
+    expect(verifiedFileApplicationProperties).to.equal(true)
+    expect(verifiedFileMainFile).to.equal(true)
+    expect(verifiedFilePipfile).to.equal(true)
+  })
 })
 
 // @ts-ignore
@@ -98,4 +171,13 @@ function validateMsbSelfDescriptionBySchema (msbSelfDescription) {
   let validate = ajv.compile(schema)
   let valid = validate(msbSelfDescription)
   return valid
+}
+
+// @ts-ignore
+function removeUuidAndTokenLinesFromApplicationProperties (fileContent) {
+  var lines = fileContent.split('\n');
+  // remove one line, starting from position
+  lines.splice(0,1); // line 1 - msb.uuid
+  lines.splice(2,1); // line 3 - msb.token
+  return lines.join('\n');
 }
