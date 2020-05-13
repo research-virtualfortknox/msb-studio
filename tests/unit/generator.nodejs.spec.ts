@@ -141,7 +141,6 @@ describe('MSB NodeJS Client Generator', () => {
     // @ts-ignore
     generatedFileSet.forEach(function (file) {
       if (file.fileName === 'application.properties') {
-
         var fileContentCounterpart = removeUuidAndTokenLinesFromApplicationProperties(file.content)
         var fileContentCounterpartExpected = removeUuidAndTokenLinesFromApplicationProperties(applicationPropertiesFileContentCounterpart)
 
@@ -179,10 +178,10 @@ function removeUuidAndTokenLinesFromApplicationProperties (fileContent) {
     0, // msb.uuid
     3 // msb.token
   ]
-  var lines = fileContent.split('\n');
+  var lines = fileContent.split('\n')
   linesToDelete.forEach(function (lineNr, index) {
     // remove one line, starting from position
-    lines.splice(lineNr - index,1)
+    lines.splice(lineNr - index, 1)
   })
-  return lines.join('\n');
+  return lines.join('\n')
 }

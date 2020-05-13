@@ -69,7 +69,6 @@ describe('MSB Node-RED Client Flow Generator', () => {
     // @ts-ignore
     generatedFileSet.forEach(function (file) {
       if (file.fileName === 'msb-client-flow.json') {
-
         var fileContentCounterpart = removeUuidAndTokenLinesFromMsbClientFlow(file.content)
         var fileContentCounterpartExpected = removeUuidAndTokenLinesFromMsbClientFlow(msbClientFlowFileContent)
 
@@ -119,7 +118,6 @@ describe('MSB Node-RED Client Flow Generator', () => {
     // @ts-ignore
     generatedFileSet.forEach(function (file) {
       if (file.fileName === 'msb-client-flow.json') {
-
         var fileContentCounterpart = removeUuidAndTokenLinesFromMsbClientFlow(file.content)
         var fileContentCounterpartExpected = removeUuidAndTokenLinesFromMsbClientFlow(msbClientFlowFileContentCounterpart)
 
@@ -172,12 +170,12 @@ function removeUuidAndTokenLinesFromMsbClientFlow (fileContent) {
     248, // event wired
     253, // event id
     261, // event wired
-    266, // debug id
+    266 // debug id
   ]
-  var lines = fileContent.split('\n');
+  var lines = fileContent.split('\n')
   linesToDelete.forEach(function (lineNr, index) {
     // remove one line, starting from position
-    lines.splice(lineNr - index,1)
+    lines.splice(lineNr - index, 1)
   })
-  return lines.join('\n');
+  return lines.join('\n')
 }
