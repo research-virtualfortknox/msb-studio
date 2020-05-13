@@ -175,9 +175,14 @@ function validateMsbSelfDescriptionBySchema (msbSelfDescription) {
 
 // @ts-ignore
 function removeUuidAndTokenLinesFromApplicationProperties (fileContent) {
+  var linesToDelete = [
+    0, // msb.uuid
+    3 // msb.token
+  ]
   var lines = fileContent.split('\n');
-  // remove one line, starting from position
-  lines.splice(0,1); // line 1 - msb.uuid
-  lines.splice(2,1); // line 3 - msb.token
+  linesToDelete.forEach(function (lineNr, index) {
+    // remove one line, starting from position
+    lines.splice(lineNr - index,1)
+  })
   return lines.join('\n');
 }
