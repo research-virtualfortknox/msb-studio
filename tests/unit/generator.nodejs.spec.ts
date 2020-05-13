@@ -16,6 +16,17 @@ import indexFileContent from '!!raw-loader!./expected_generator_results/NodeJs_M
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import packageJsonFileContent from '!!raw-loader!./expected_generator_results/NodeJs_MySampleApp_client/package.json.raw'
 
+// counterpart files
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import applicationPropertiesFileContentCounterpart from '!!raw-loader!./expected_generator_results/NodeJs_MySampleApp_client_counterpart/application.properties'
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import indexFileContentCounterpart from '!!raw-loader!./expected_generator_results/NodeJs_MySampleApp_client_counterpart/index.js'
+// @ts-ignore
+// eslint-disable-next-line import/no-webpack-loader-syntax
+import packageJsonFileContentCounterpart from '!!raw-loader!./expected_generator_results/NodeJs_MySampleApp_client_counterpart/package.json.raw'
+
 // ajv is used to validate specified dataformats of the msb client
 const Ajv = require('ajv')
 // array of unknown format names will be ignored
@@ -90,6 +101,68 @@ describe('MSB NodeJS Client Generator', () => {
     expect(verifiedFileIndexFile).to.equal(true)
     expect(verifiedFilePackageJson).to.equal(true)
   })
+
+  it('validate generated project files (counterpart)', () => {
+    // check first if the source msb selfdesc file is valid according to its json schema
+    expect(validateMsbSelfDescriptionBySchema(msbSelfDescTestContent)).to.equal(true)
+
+    const wrapper = shallowMount(CodeGenerator, {
+      data () {
+        return {
+          codeSource: JSON.stringify(msbSelfDescTestContent),
+          sourceOptions: {
+            sourceLanguage: 'msbSelfDescription'
+          },
+          targetOptions: {
+            targetLanguage: 'JavaScript',
+            generateCounterpart: true
+          },
+          fileSet: undefined
+        }
+      },
+      propsData: {
+      },
+      localVue,
+      // @ts-ignore
+      vuetify
+    })
+    expect(wrapper.vm.$data.sourceOptions.sourceLanguage).to.equal('msbSelfDescription')
+    expect(wrapper.vm.$data.targetOptions.targetLanguage).to.equal('JavaScript')
+    expect(wrapper.vm.$data.targetOptions.generateCounterpart).to.equal(true)
+
+    var verifiedFileApplicationProperties = false
+    var verifiedFileIndexFile = false
+    var verifiedFilePackageJson = false
+
+    // current generated files
+    var generatedFileSet = wrapper.vm.$data.fileSet
+
+    // compare expected generator results with current generator results
+    // @ts-ignore
+    generatedFileSet.forEach(function (file) {
+      if (file.fileName === 'application.properties') {
+
+        var fileContentCounterpart = removeUuidAndTokenLinesFromApplicationProperties(file.content)
+        var fileContentCounterpartExpected = removeUuidAndTokenLinesFromApplicationProperties(applicationPropertiesFileContentCounterpart)
+
+        expect(fileContentCounterpart).to.equal(fileContentCounterpartExpected)
+        verifiedFileApplicationProperties = true
+      }
+      if (file.fileName === 'index.js') {
+        expect(file.content).to.equal(indexFileContentCounterpart)
+        verifiedFileIndexFile = true
+      }
+      if (file.fileName === 'package.json') {
+        expect(file.content).to.equal(packageJsonFileContentCounterpart)
+        verifiedFilePackageJson = true
+      }
+    })
+
+    // verify that all files were tested
+    expect(verifiedFileApplicationProperties).to.equal(true)
+    expect(verifiedFileIndexFile).to.equal(true)
+    expect(verifiedFilePackageJson).to.equal(true)
+  })
 })
 
 // @ts-ignore
@@ -98,4 +171,13 @@ function validateMsbSelfDescriptionBySchema (msbSelfDescription) {
   let validate = ajv.compile(schema)
   let valid = validate(msbSelfDescription)
   return valid
+}
+
+// @ts-ignore
+function removeUuidAndTokenLinesFromApplicationProperties (fileContent) {
+  var lines = fileContent.split('\n');
+  // remove one line, starting from position
+  lines.splice(0,1); // line 1 - msb.uuid
+  lines.splice(2,1); // line 3 - msb.token
+  return lines.join('\n');
 }
