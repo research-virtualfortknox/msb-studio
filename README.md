@@ -21,6 +21,7 @@ Features:
 Supported client languages:
 - NodeJs
 - Python
+- Node-RED Flow
 
 Languages supported in a future release:
 - Java
