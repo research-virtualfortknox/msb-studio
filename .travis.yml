@@ -1,0 +1,10 @@
+language: node_js
+
+node_js:
+  - "8"
+
+cache: npm
+
+# npm test is executed here by default, change it here:
+#script:
+#  - npm run test:unit
