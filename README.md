@@ -1,6 +1,7 @@
 # MSB Studio
 
 [![Build Status](https://travis-ci.org/research-virtualfortknox/msb-studio.svg?branch=master)](https://travis-ci.org/research-virtualfortknox/msb-studio)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fresearch-virtualfortknox%2Fmsb-studio.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fresearch-virtualfortknox%2Fmsb-studio?ref=badge_shield)
 
 MSB Studio is a simple WebIDE to facilitate the integration of your services by providing auto-generated client code for a quick-start.
 
@@ -68,3 +69,7 @@ npm run serve
 ```
 
 Open MSB Studio: http://localhost:8080
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fresearch-virtualfortknox%2Fmsb-studio.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fresearch-virtualfortknox%2Fmsb-studio?ref=badge_large)
