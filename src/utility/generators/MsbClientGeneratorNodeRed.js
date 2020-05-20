@@ -112,14 +112,6 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
     // fix functions with no payload
     functions = this.fixDataFormatWithNoPayload(functions)
 
-    // TODO: Support date-time in params, events an functions
-    // fix config params with "date-time" instead of "datetime"
-    params = this.fixConfigParamDataFormatWithTypeDateTime(params)
-    // fix events with "date-time" instead of "datetime"
-    events = this.fixEventOrFunctionDataFormatWithTypeDateTime(events)
-    // fix functions with "date-time" instead of "datetime"
-    functions = this.fixEventOrFunctionDataFormatWithTypeDateTime(functions)
-
     // add node red nodeId to events
     events = this.addNodeRedNodeIds(events)
     // add node red nodeId to events
@@ -151,47 +143,6 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
       })
     }
     return eventsOrFunctions
-  }
-
-  /**
-   * Sets the dataFormat type of events or functions to "datetime", if specified as "date-time"
-   * @param {eventsOrFunctions} eventsOrFunctions
-   * @returns {eventsOrFunctions} eventsOrFunctions with updated dataFormats
-   */
-  fixEventOrFunctionDataFormatWithTypeDateTime (eventsOrFunctions) {
-    if (eventsOrFunctions) {
-      eventsOrFunctions.forEach(function (eventOrFunction, index, theArray) {
-        if (
-          eventOrFunction.dataFormat.dataObject &&
-          eventOrFunction.dataFormat.dataObject.hasOwnProperty('format') &&
-          eventOrFunction.dataFormat.dataObject.format === 'date-time'
-        ) {
-          eventOrFunction.dataFormat.dataObject.format = 'datetime'
-          theArray[index] = eventOrFunction
-        }
-      })
-    }
-    return eventsOrFunctions
-  }
-
-  /**
-   * Sets the dataFormat type of config params to "datetime", if specified as "date-time"
-   * @param {eventsOrFunctions} eventsOrFunctions
-   * @returns {eventsOrFunctions} eventsOrFunctions with updated dataFormats
-   */
-  fixConfigParamDataFormatWithTypeDateTime (configParams) {
-    if (configParams) {
-      configParams.forEach(function (configParam, index, theArray) {
-        if (
-          configParam.hasOwnProperty('format') &&
-          configParam.format === 'date-time'
-        ) {
-          configParam.format = 'datetime'
-          theArray[index] = configParam
-        }
-      })
-    }
-    return configParams
   }
 
   /**
