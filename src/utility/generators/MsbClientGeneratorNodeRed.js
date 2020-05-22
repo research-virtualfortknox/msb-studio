@@ -100,12 +100,6 @@ export default class MsbClientGeneratorNodeRed extends MsbClientGenerator {
     settings.msbObjectNodeId = uuidv4()
     settings.debugNodeId = uuidv4()
 
-    // TODO: Support complex objects in events an functions
-    // remove complex events
-    events = this.removeEventsOrFunctionsWithComplexObjects(events)
-    // remove complex functions
-    functions = this.removeEventsOrFunctionsWithComplexObjects(functions)
-
     // TODO: Support no payload in events an functions
     // fix events with no payload
     events = this.fixDataFormatWithNoPayload(events)

@@ -28,7 +28,8 @@
 <%# TODO: Add support for complex objects -%>
             {
                 "name": "<%= event.eventId -%>",
-                "dataTypeName": "<%- (event.dataFormat.dataObject.format ? event.dataFormat.dataObject.format : event.dataFormat.dataObject.type) -%>"
+                "dataTypeName": "<%- (event.dataFormat.dataObject.format ? event.dataFormat.dataObject.format : (event.dataFormat.dataObject.type ? event.dataFormat.dataObject.type : 'object')) -%>",
+                "schema": <%- ((!event.dataFormat.dataObject.type || event.dataFormat.dataObject.type === 'object') ? JSON.stringify(JSON.stringify(event.dataFormat)) : '""' ) %>
             }<%= (events[events.length-1].eventId != event.eventId) ? "," : "" %>
 <%   }) -%>
 <% } -%>
@@ -39,7 +40,8 @@
 <%# TODO: Add support for complex objects -%>
             {
                 "name": "<%= func.functionId -%>",
-                "dataTypeName": "<%- (func.dataFormat.dataObject.format ? func.dataFormat.dataObject.format : func.dataFormat.dataObject.type) -%>",
+                "dataTypeName": "<%- (func.dataFormat.dataObject.format ? func.dataFormat.dataObject.format : (func.dataFormat.dataObject.type ? func.dataFormat.dataObject.type : 'object')) -%>",
+                "schema": <%- ((!func.dataFormat.dataObject.type || func.dataFormat.dataObject.type === 'object') ? JSON.stringify(JSON.stringify(func.dataFormat)) : '""' ) -%>,
                 "output": "<%= index + 1  -%>"
             }<%= (functions[functions.length-1].functionId != func.functionId) ? "," : "" %>
 <%   }) -%>
