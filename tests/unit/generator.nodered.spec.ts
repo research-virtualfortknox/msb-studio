@@ -64,6 +64,7 @@ describe('MSB Node-RED Client Flow Generator', () => {
 
     // current generated files
     var generatedFileSet = wrapper.vm.$data.fileSet
+    generatedFileSet = checkAndConvertLineEndingsIfOnWinPlatform(generatedFileSet)
 
     // compare expected generator results with current generator results
     // @ts-ignore
@@ -113,6 +114,7 @@ describe('MSB Node-RED Client Flow Generator', () => {
 
     // current generated files
     var generatedFileSet = wrapper.vm.$data.fileSet
+    generatedFileSet = checkAndConvertLineEndingsIfOnWinPlatform(generatedFileSet)
 
     // compare expected generator results with current generator results
     // @ts-ignore
@@ -131,6 +133,25 @@ describe('MSB Node-RED Client Flow Generator', () => {
   })
 })
 
+/**
+ * Check if test is executed on windows
+ * If platform is windows, convert all line endings to CRLF (\r\n)
+ * @param {FileSet} fileSet provided by the code generators
+ * @return {FileSet} updated fileSet
+ */
+// @ts-ignore
+function checkAndConvertLineEndingsIfOnWinPlatform (fileSet) {
+  // @ts-ignore
+  if (process.platform === 'win32') {
+    // @ts-ignore
+    fileSet.forEach(function (file, index, theArray) {
+      file.content = file.content.replace(/\r?\n/g, '\r\n')
+      theArray[index] = file
+    })
+  }
+  return fileSet
+}
+
 // @ts-ignore
 function validateMsbSelfDescriptionBySchema (msbSelfDescription) {
   let schema = require('@/utility/schemas/selfdescription_schema.json')
@@ -145,32 +166,38 @@ function removeUuidAndTokenLinesFromMsbClientFlow (fileContent) {
     2, // id
     4, // uuid
     7, // token
-    133, // output wired 0
-    136, // output wired 1
-    139, // output wired 2
-    142, // output wired 3
-    145, // output wired 4
-    148, // output wired 5
-    151, // output wired 6
-    154, // output wired 7
-    157, // output wired 8
-    162, // event id
-    170, // event wired
-    175, // event id
-    183, // event wired
-    188, // event id
-    196, // event wired
-    201, // event id
-    209, // event wired
-    214, // event id
-    222, // event wired
-    227, // event id
-    235, // event wired
-    240, // event id
-    248, // event wired
-    253, // event id
-    261, // event wired
-    266 // debug id
+    171, // output wired 0
+    174, // output wired 1
+    177, // output wired 2
+    180, // output wired 3
+    183, // output wired 4
+    186, // output wired 5
+    189, // output wired 6
+    192, // output wired 7
+    195, // output wired 8
+    198, // output wired 9
+    201, // output wired 10
+    206, // event id
+    214, // event wired
+    219, // event id
+    227, // event wired
+    232, // event id
+    240, // event wired
+    245, // event id
+    253, // event wired
+    258, // event id
+    266, // event wired
+    271, // event id
+    279, // event wired
+    284, // event id
+    292, // event wired
+    297, // event id
+    305, // event wired
+    310, // event id
+    318, // event wired
+    323, // event id
+    331, // event wired
+    336 // debug id
   ]
   var lines = fileContent.split('\n')
   linesToDelete.forEach(function (lineNr, index) {

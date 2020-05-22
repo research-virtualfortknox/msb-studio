@@ -1,6 +1,6 @@
 [
     {
-        "id": "3ced2e39-4308-43d6-b0ce-23e21183ad02",
+        "id": "a94f57fe-4b01-497d-9279-bebfbb3745b2",
         "type": "msb-object",
         "uuid": "d33880ce-fb3f-44a4-b407-0993e123456",
         "name": "MySampleApp",
@@ -8,7 +8,7 @@
         "token": "1233e25ba567",
         "serviceType": "Application",
         "url": "<url-of-running-msb-websocket-interface> e.g. ws://localhost:8085",
-        "outputs": 9,
+        "outputs": 11,
         "x": 450,
         "y": 0,
         "configList": [
@@ -49,118 +49,162 @@
             },
             {
                 "name": "confParam8",
-                "dataTypeName": "datetime",
+                "dataTypeName": "date-time",
                 "configValue": "2019-07-23 11:07:00.938401"
             }
         ],
         "eventList": [
             {
                 "name": "SIMPLE_E1",
-                "dataTypeName": "string"
+                "dataTypeName": "string",
+                "schema": ""
             },
             {
                 "name": "SIMPLE_E2",
-                "dataTypeName": "boolean"
+                "dataTypeName": "boolean",
+                "schema": ""
             },
             {
                 "name": "SIMPLE_E3",
-                "dataTypeName": "int32"
+                "dataTypeName": "int32",
+                "schema": ""
             },
             {
                 "name": "SIMPLE_E4",
-                "dataTypeName": "int64"
+                "dataTypeName": "int64",
+                "schema": ""
             },
             {
                 "name": "SIMPLE_E5",
-                "dataTypeName": "float"
+                "dataTypeName": "float",
+                "schema": ""
             },
             {
                 "name": "SIMPLE_E6",
-                "dataTypeName": "double"
+                "dataTypeName": "double",
+                "schema": ""
             },
             {
                 "name": "SIMPLE_E7",
-                "dataTypeName": "byte"
+                "dataTypeName": "byte",
+                "schema": ""
             },
             {
                 "name": "SIMPLE_E8",
-                "dataTypeName": "datetime"
+                "dataTypeName": "date-time",
+                "schema": ""
+            },
+            {
+                "name": "COMPLEX_E9",
+                "dataTypeName": "object",
+                "schema": "{\"dataObject\":{\"$ref\":\"#/definitions/MyDevice\"},\"MyDevice\":{\"type\":\"object\",\"properties\":{\"deviceName\":{\"type\":\"string\"},\"deviceWeight\":{\"type\":\"number\",\"format\":\"float\"},\"submodules\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/MyModule\"}}}},\"MyModule\":{\"type\":\"object\",\"properties\":{\"moduleName\":{\"type\":\"string\"}}}}"
+            },
+            {
+                "name": "RESPONSE_EVENT_E10",
+                "dataTypeName": "object",
+                "schema": "{\"dataObject\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"}}}}"
             }
         ],
         "functionList": [
             {
                 "name": "SIMPLE_F1",
                 "dataTypeName": "string",
+                "schema": "",
                 "output": "1"
             },
             {
                 "name": "SIMPLE_F2",
                 "dataTypeName": "boolean",
+                "schema": "",
                 "output": "2"
             },
             {
                 "name": "SIMPLE_F3",
                 "dataTypeName": "int32",
+                "schema": "",
                 "output": "3"
             },
             {
                 "name": "SIMPLE_F4",
                 "dataTypeName": "int64",
+                "schema": "",
                 "output": "4"
             },
             {
                 "name": "SIMPLE_F5",
                 "dataTypeName": "float",
+                "schema": "",
                 "output": "5"
             },
             {
                 "name": "SIMPLE_F6",
                 "dataTypeName": "double",
+                "schema": "",
                 "output": "6"
             },
             {
                 "name": "SIMPLE_F7",
                 "dataTypeName": "byte",
+                "schema": "",
                 "output": "7"
             },
             {
                 "name": "SIMPLE_F8",
-                "dataTypeName": "datetime",
+                "dataTypeName": "date-time",
+                "schema": "",
                 "output": "8"
+            },
+            {
+                "name": "COMPLEX_F9",
+                "dataTypeName": "object",
+                "schema": "{\"dataObject\":{\"$ref\":\"#/definitions/MyDevice\"},\"MyDevice\":{\"type\":\"object\",\"properties\":{\"deviceName\":{\"type\":\"string\"},\"deviceWeight\":{\"type\":\"number\",\"format\":\"float\"},\"submodules\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/definitions/MyModule\"}}}},\"MyModule\":{\"type\":\"object\",\"properties\":{\"moduleName\":{\"type\":\"string\"}}}}",
+                "output": "9"
+            },
+            {
+                "name": "RESPONSE_FUNCTION_F10",
+                "dataTypeName": "object",
+                "schema": "{\"dataObject\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"description\":{\"type\":\"string\"}}}}",
+                "output": "10"
             }
         ],
         "wires": [
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ],
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ],
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ],
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ],
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ],
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ],
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ],
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ],
             [
-                "31a4c4c3-caf5-44af-903e-7700f83888d0"
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
+            ],
+            [
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
+            ],
+            [
+                "d2a467d3-c957-485b-bfe4-8cb0a8d590ed"
             ]
         ]
     },
     {
-        "id": "5b299d5b-e11f-4ac8-a387-2cf59a5a73dc",
+        "id": "e9b3a8ef-c788-4457-8aed-7dc50f9c3ad9",
         "type": "msb-event",
         "name": "SIMPLE_E1",
         "event": "SIMPLE_E1",
@@ -168,12 +212,12 @@
         "y": 0,
         "wires": [
             [
-                "3ced2e39-4308-43d6-b0ce-23e21183ad02"
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
             ]
         ]
     },
     {
-        "id": "7487102b-94d1-4b10-9736-d907f067738f",
+        "id": "429f11d9-eba1-4e43-b801-010d25455b94",
         "type": "msb-event",
         "name": "SIMPLE_E2",
         "event": "SIMPLE_E2",
@@ -181,12 +225,12 @@
         "y": 40,
         "wires": [
             [
-                "3ced2e39-4308-43d6-b0ce-23e21183ad02"
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
             ]
         ]
     },
     {
-        "id": "828ba5e9-1516-4880-9f8c-0aa92bb046f6",
+        "id": "4ee1fc41-4860-454d-acfc-7281f06d5384",
         "type": "msb-event",
         "name": "SIMPLE_E3",
         "event": "SIMPLE_E3",
@@ -194,12 +238,12 @@
         "y": 80,
         "wires": [
             [
-                "3ced2e39-4308-43d6-b0ce-23e21183ad02"
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
             ]
         ]
     },
     {
-        "id": "8eeb8dcd-7acb-4338-ba40-5552bc3d1dcf",
+        "id": "c8179ed4-5a7d-437d-ae4f-a2187055558f",
         "type": "msb-event",
         "name": "SIMPLE_E4",
         "event": "SIMPLE_E4",
@@ -207,12 +251,12 @@
         "y": 120,
         "wires": [
             [
-                "3ced2e39-4308-43d6-b0ce-23e21183ad02"
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
             ]
         ]
     },
     {
-        "id": "660944ae-29cf-44af-9c1b-0bc065242fb8",
+        "id": "602cbe6f-6dfb-41da-83ca-4fb16c381fd7",
         "type": "msb-event",
         "name": "SIMPLE_E5",
         "event": "SIMPLE_E5",
@@ -220,12 +264,12 @@
         "y": 160,
         "wires": [
             [
-                "3ced2e39-4308-43d6-b0ce-23e21183ad02"
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
             ]
         ]
     },
     {
-        "id": "282e2807-3b93-42e4-9aad-bd05767828f3",
+        "id": "a83a6f4c-527a-4215-9571-9190abbfecbe",
         "type": "msb-event",
         "name": "SIMPLE_E6",
         "event": "SIMPLE_E6",
@@ -233,12 +277,12 @@
         "y": 200,
         "wires": [
             [
-                "3ced2e39-4308-43d6-b0ce-23e21183ad02"
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
             ]
         ]
     },
     {
-        "id": "afce8111-280b-42ba-bdc6-9d30099170c0",
+        "id": "8f041b4e-17fc-4e18-81a1-249b29559dba",
         "type": "msb-event",
         "name": "SIMPLE_E7",
         "event": "SIMPLE_E7",
@@ -246,12 +290,12 @@
         "y": 240,
         "wires": [
             [
-                "3ced2e39-4308-43d6-b0ce-23e21183ad02"
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
             ]
         ]
     },
     {
-        "id": "c1088fe6-4f42-4e76-9b43-a616ce0ab9eb",
+        "id": "5b16f662-e2f2-41bc-b8b6-9c601f2aad0a",
         "type": "msb-event",
         "name": "SIMPLE_E8",
         "event": "SIMPLE_E8",
@@ -259,12 +303,38 @@
         "y": 280,
         "wires": [
             [
-                "3ced2e39-4308-43d6-b0ce-23e21183ad02"
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
             ]
         ]
     },
     {
-        "id": "31a4c4c3-caf5-44af-903e-7700f83888d0",
+        "id": "37ab6fed-65fd-4575-b8a8-2d35a8f9bba4",
+        "type": "msb-event",
+        "name": "COMPLEX_E9",
+        "event": "COMPLEX_E9",
+        "x": 200,
+        "y": 320,
+        "wires": [
+            [
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
+            ]
+        ]
+    },
+    {
+        "id": "f923dca0-9d13-4b0c-a5cd-11ac749d9f38",
+        "type": "msb-event",
+        "name": "RESPONSE_EVENT_E10",
+        "event": "RESPONSE_EVENT_E10",
+        "x": 200,
+        "y": 360,
+        "wires": [
+            [
+                "a94f57fe-4b01-497d-9279-bebfbb3745b2"
+            ]
+        ]
+    },
+    {
+        "id": "d2a467d3-c957-485b-bfe4-8cb0a8d590ed",
         "type": "debug",
         "name": "",
         "active": true,

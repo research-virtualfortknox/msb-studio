@@ -78,6 +78,7 @@ describe('MSB Python Client Generator', () => {
 
     // current generated files
     var generatedFileSet = wrapper.vm.$data.fileSet
+    generatedFileSet = checkAndConvertLineEndingsIfOnWinPlatform(generatedFileSet)
 
     // compare expected generator results with current generator results
     // @ts-ignore
@@ -136,6 +137,7 @@ describe('MSB Python Client Generator', () => {
 
     // current generated files
     var generatedFileSet = wrapper.vm.$data.fileSet
+    generatedFileSet = checkAndConvertLineEndingsIfOnWinPlatform(generatedFileSet)
 
     // compare expected generator results with current generator results
     // @ts-ignore
@@ -163,6 +165,25 @@ describe('MSB Python Client Generator', () => {
     expect(verifiedFilePipfile).to.equal(true)
   })
 })
+
+/**
+ * Check if test is executed on windows
+ * If platform is windows, convert all line endings to CRLF (\r\n)
+ * @param {FileSet} fileSet provided by the code generators
+ * @return {FileSet} updated fileSet
+ */
+// @ts-ignore
+function checkAndConvertLineEndingsIfOnWinPlatform (fileSet) {
+  // @ts-ignore
+  if (process.platform === 'win32') {
+    // @ts-ignore
+    fileSet.forEach(function (file, index, theArray) {
+      file.content = file.content.replace(/\r?\n/g, '\r\n')
+      theArray[index] = file
+    })
+  }
+  return fileSet
+}
 
 // @ts-ignore
 function validateMsbSelfDescriptionBySchema (msbSelfDescription) {
