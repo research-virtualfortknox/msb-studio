@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 // ui framework
 import vuetify from './plugins/vuetify'
+// access to clipboard
+import VueClipboard from 'vue-clipboard2'
 // page router
 import VueRouter from 'vue-router'
 // @ts-ignore
@@ -19,6 +21,8 @@ import 'prismjs/components/prism-properties.js'
 import 'prismjs/components/prism-markdown.js'
 // vue-prism-editor dependency
 import 'vue-prism-editor/dist/VuePrismEditor.css'
+
+Vue.use(VueClipboard)
 
 // init the page router
 Vue.use(VueRouter)

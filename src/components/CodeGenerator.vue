@@ -55,6 +55,30 @@
           <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-btn
+                v-on:click="copyFromSourceEditorToClipboard"
+                v-on="on"
+                text icon small>
+                <v-icon small>mdi-content-copy</v-icon>
+              </v-btn>
+            </template>
+            <span>Copy</span>
+          </v-tooltip>
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                v-on:click="pasteToSourceEditorFromClipboard"
+                v-on="on"
+                text icon small>
+                <v-icon small>mdi-content-paste</v-icon>
+              </v-btn>
+            </template>
+            <span>Paste</span>
+          </v-tooltip>
+
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn
                 v-on:click="clearSourceEditor"
                 v-on="on"
                 text icon small>
@@ -174,6 +198,7 @@
           language="json"
           :line-numbers="lineNumbers"
           @change="onOptionsChaned"
+          id="my-code-editor-source"
           class="my-code-editor  overflow-y-auto"/>
         <v-alert
           v-model="validationErrorsVisible"
@@ -246,8 +271,19 @@
           class="code-genetation-container overflow-y-auto"
           >
           <div v-for="file in fileSet" v-bind:key="file.fileName">
-            <div v-if="file.format !== 'md'">
+            <div v-if="file.format !== 'md'" style="position: relative;">
               <div class="Codeblock-title">{{ file.fileName }}</div>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn  style="position: absolute; right: 0; top: 0;"
+                    v-on:click="copyTextToClipboard(file.content)"
+                    v-on="on"
+                    text icon small>
+                    <v-icon small>mdi-content-copy</v-icon>
+                  </v-btn>
+                </template>
+                <span>Copy</span>
+              </v-tooltip>
               <prism :language="file.format" class="my-code-viewer">{{ file.content }}</prism>
             </div>
           </div>
@@ -589,15 +625,67 @@ export default Vue.extend({
       return quicktype(options)
     },
 
+    // copy from code source
+    copyFromSourceEditorToClipboard () {
+      // use the vue-clipboard2 library to copy text to clipboard
+      this.$copyText(this.codeSource).then(function (e) {
+        // copied successfully
+      }, function (e) {
+        // failed to copy
+        console.error('Cannot copy to clipboard' + e)
+      })
+    },
+
+    // paste to code source
+    pasteToSourceEditorFromClipboard () {
+      navigator.clipboard.readText()
+        .then(text => {
+          var codeSourceBefore = this.codeSource
+          this.codeSource = text
+          // save change to history for undo / redo actions
+          this.saveCodeSourceChangesToHistory(codeSourceBefore, this.codeSource)
+        })
+        .catch(err => {
+        // failed to paste
+          console.error('Cannot paste from clipboard' + err)
+        })
+    },
+
     // clear content of source editor
     clearSourceEditor () {
+      var codeSourceBefore = this.codeSource
       this.codeSource = ''
+      // save change to history for undo / redo actions
+      this.saveCodeSourceChangesToHistory(codeSourceBefore, this.codeSource)
     },
 
     // format code source
     formatCodeSource () {
       if (this.validationErrors.length === 0) {
+        var codeSourceBefore = this.codeSource
         this.codeSource = JSON.stringify(JSON.parse(this.codeSource), null, 2)
+        // save change to history for undo / redo actions
+        this.saveCodeSourceChangesToHistory(codeSourceBefore, this.codeSource)
+      }
+    },
+
+    // copy text to clipboard
+    copyTextToClipboard (text:string) {
+      // use the vue-clipboard2 library to copy text to clipboard
+      this.$copyText(text).then(function (e) {
+        // copied successfully
+      }, function (e) {
+        // failed to copy
+        console.error('Cannot copy to clipboard' + e)
+      })
+    },
+
+    // save change of code source to history for undo / redo actions
+    saveCodeSourceChangesToHistory (valueBefore:string, valueAfter:string) {
+      if (valueAfter !== valueBefore) {
+        var myCodeEditor:PrismEditor = this.$refs.myCodeEditor
+        myCodeEditor.recordChange(valueBefore)
+        myCodeEditor.recordChange(valueAfter)
       }
     },
 
