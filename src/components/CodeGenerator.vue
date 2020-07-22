@@ -644,6 +644,7 @@ export default Vue.extend({
           this.codeSource = text
           // save change to history for undo / redo actions
           this.saveCodeSourceChangesToHistory(codeSourceBefore, this.codeSource)
+          this.collectOptionsAndConvert()
         })
         .catch(err => {
         // failed to paste
