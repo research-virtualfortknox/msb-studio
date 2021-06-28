@@ -23,7 +23,7 @@
     "core-js": "^2.6.11",
     "ejs": "^3.0.2",
     "jszip": "^3.4.0",
-    "prismjs": "^1.20.0",
+    "prismjs": "^1.24.0",
     "quicktype-core": "6.0.46",
     "raw-loader": "^3.1.0",
     "uuid": "^3.4.0",
