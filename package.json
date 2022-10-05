@@ -18,12 +18,12 @@
   },
   "dependencies": {
     "@types/jszip": "^3.1.7",
-    "ajv": "^6.12.2",
-    "axios": "^0.19.2",
+    "ajv": "^6.12.3",
+    "axios": "^0.21.3",
     "core-js": "^2.6.11",
-    "ejs": "^3.0.2",
-    "jszip": "^3.4.0",
-    "prismjs": "^1.20.0",
+    "ejs": "^3.1.7",
+    "jszip": "^3.7.0",
+    "prismjs": "^1.27.0",
     "quicktype-core": "6.0.46",
     "raw-loader": "^3.1.0",
     "uuid": "^3.4.0",
@@ -32,7 +32,7 @@
     "vue-prism-component": "^1.2.0",
     "vue-prism-editor": "^0.3.0",
     "vue-router": "^3.1.6",
-    "vuetify": "^2.2.23"
+    "vuetify": "^2.6.10"
   },
   "devDependencies": {
     "@types/chai": "^4.2.11",
