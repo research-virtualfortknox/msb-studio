@@ -22,7 +22,7 @@
     "axios": "^0.19.2",
     "core-js": "^2.6.11",
     "ejs": "^3.0.2",
-    "jszip": "^3.4.0",
+    "jszip": "^3.8.0",
     "prismjs": "^1.20.0",
     "quicktype-core": "6.0.46",
     "raw-loader": "^3.1.0",
