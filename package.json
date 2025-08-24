@@ -19,7 +19,7 @@
   "dependencies": {
     "@types/jszip": "^3.1.7",
     "ajv": "^6.12.2",
-    "axios": "^0.19.2",
+    "axios": "^0.20.0",
     "core-js": "^2.6.11",
     "ejs": "^3.0.2",
     "jszip": "^3.4.0",
