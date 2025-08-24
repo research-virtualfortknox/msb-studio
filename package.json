@@ -27,7 +27,7 @@
     "quicktype-core": "6.0.46",
     "raw-loader": "^3.1.0",
     "uuid": "^3.4.0",
-    "vue": "^2.6.11",
+    "vue": "^3.0.0",
     "vue-clipboard2": "^0.3.1",
     "vue-prism-component": "^1.2.0",
     "vue-prism-editor": "^0.3.0",
